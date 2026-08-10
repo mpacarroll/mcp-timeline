@@ -1,0 +1,12 @@
+# Real location data never enters this repo. Synthetic fixtures in tests/ only.
+*.db
+*.sqlite
+*.sqlite3
+location-history*.json
+locationhistory*.json
+Takeout*/
+data/
+
+__pycache__/
+*.pyc
+.venv/
