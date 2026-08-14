@@ -37,6 +37,8 @@ CREATE TABLE visits (
     place_id      TEXT REFERENCES places(place_id),
     start_utc     TEXT NOT NULL,
     end_utc       TEXT NOT NULL,
+    start_local   TEXT NOT NULL,      -- local wall-clock, for display
+    end_local     TEXT NOT NULL,
     local_date    TEXT NOT NULL,      -- date in the device's own offset; grouping key
     duration_min  REAL NOT NULL,
     probability   REAL
@@ -47,6 +49,8 @@ CREATE TABLE activities (
     mode          TEXT NOT NULL,      -- walking / in subway / flying / ...
     start_utc     TEXT NOT NULL,
     end_utc       TEXT NOT NULL,
+    start_local   TEXT NOT NULL,      -- local wall-clock, for display
+    end_local     TEXT NOT NULL,
     local_date    TEXT NOT NULL,
     duration_min  REAL NOT NULL,
     distance_m    REAL,
@@ -71,11 +75,12 @@ CREATE INDEX idx_path_points_ts        ON path_points(ts_utc);
 
 
 def parse_ts(s):
-    """Return (aware datetime, local_date). local_date comes from the string's
-    own offset, so a 11pm subway ride stays on the rider's day. Z-suffixed
-    strings carry no local offset; their UTC date is the best available."""
+    """Return (aware datetime, local_date, local_hms). Local values come from
+    the string's own offset, so a 11pm subway ride stays on the rider's day.
+    Z-suffixed strings carry no local offset; their UTC values are the best
+    available."""
     dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
-    return dt, s[:10]
+    return dt, s[:10], s[11:19]
 
 
 def to_utc_iso(dt):
@@ -112,8 +117,8 @@ def ingest(export_path, db_path):
 
     for rec in records:
         try:
-            start, local_date = parse_ts(rec["startTime"])
-            end, _ = parse_ts(rec["endTime"])
+            start, local_date, start_hms = parse_ts(rec["startTime"])
+            end, _, end_hms = parse_ts(rec["endTime"])
             duration_min = (end - start).total_seconds() / 60
 
             if "visit" in rec:
@@ -121,10 +126,12 @@ def ingest(export_path, db_path):
                 pid = top["placeID"]
                 lat, lng = parse_geo(top["placeLocation"])
                 db.execute(
-                    "INSERT INTO visits (place_id, start_utc, end_utc, local_date,"
-                    " duration_min, probability) VALUES (?,?,?,?,?,?)",
-                    (pid, to_utc_iso(start), to_utc_iso(end), local_date,
-                     duration_min, opt_float(rec["visit"].get("probability"))))
+                    "INSERT INTO visits (place_id, start_utc, end_utc, start_local,"
+                    " end_local, local_date, duration_min, probability)"
+                    " VALUES (?,?,?,?,?,?,?,?)",
+                    (pid, to_utc_iso(start), to_utc_iso(end), start_hms, end_hms,
+                     local_date, duration_min,
+                     opt_float(rec["visit"].get("probability"))))
                 p = places.setdefault(pid, {
                     "lat": lat, "lng": lng, "semantic_type": top.get("semanticType"),
                     "visit_count": 0, "first_seen": start, "last_seen": end})
@@ -140,11 +147,13 @@ def ingest(export_path, db_path):
                 s_lat, s_lng = parse_geo(act["start"]) if "start" in act else (None, None)
                 e_lat, e_lng = parse_geo(act["end"]) if "end" in act else (None, None)
                 db.execute(
-                    "INSERT INTO activities (mode, start_utc, end_utc, local_date,"
-                    " duration_min, distance_m, start_lat, start_lng, end_lat, end_lng,"
-                    " probability) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                    "INSERT INTO activities (mode, start_utc, end_utc, start_local,"
+                    " end_local, local_date, duration_min, distance_m, start_lat,"
+                    " start_lng, end_lat, end_lng, probability)"
+                    " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     (act.get("topCandidate", {}).get("type", "unknown"),
-                     to_utc_iso(start), to_utc_iso(end), local_date, duration_min,
+                     to_utc_iso(start), to_utc_iso(end), start_hms, end_hms,
+                     local_date, duration_min,
                      opt_float(act.get("distanceMeters")), s_lat, s_lng, e_lat, e_lng,
                      opt_float(act.get("probability"))))
 
