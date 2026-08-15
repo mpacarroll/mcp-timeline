@@ -14,6 +14,7 @@ edit them with the same care as user-facing copy.
 import math
 import os
 import sqlite3
+from typing import Any
 
 from mcp.server import MCPServer
 
@@ -52,7 +53,7 @@ def _haversine_m(lat1, lng1, lat2, lng2):
 
 @server.tool()
 def activity_stats(mode: str, start_date: str, end_date: str,
-                   group_by: str = "month") -> dict:
+                   group_by: str = "month") -> dict[str, Any]:
     """Summarize movement for one transport mode over a local-date range.
 
     Use for questions like "how much did I walk in March" or "average subway
@@ -97,7 +98,7 @@ def activity_stats(mode: str, start_date: str, end_date: str,
 
 
 @server.tool()
-def day_summary(date: str) -> dict:
+def day_summary(date: str) -> dict[str, Any]:
     """Chronological story of one local day: place visits and movement.
 
     Use for "where was I on 2026-03-14" or for daily-recap context. date is
@@ -163,7 +164,7 @@ def visits_near(lat: float, lng: float, radius_m: int = 100) -> list[dict]:
 
 
 @server.tool()
-def place_history(place: str, limit: int = 20) -> dict:
+def place_history(place: str, limit: int = 20) -> dict[str, Any]:
     """Every recorded visit to one place, looked up by place_id or by name.
 
     place may be an exact place_id (starts with ChIJ) or a name matched

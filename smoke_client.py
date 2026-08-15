@@ -36,7 +36,8 @@ def probe_inputs():
 
 
 def show(name, result):
-    body = result.structured_content or [c.text for c in result.content]
+    body = result.structured_content if result.structured_content is not None \
+        else [c.text for c in result.content]
     print(f"\n=== {name} ===")
     print(json.dumps(body, indent=2)[:1500])
 
