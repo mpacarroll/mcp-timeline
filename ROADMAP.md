@@ -2,6 +2,18 @@
 
 Decisions parked here are operator calls, recorded with their reasoning.
 
+## Near-term priority: reach before revenue
+
+Decided 2026-08-15. A priced knowledge product built on this project needs
+an audience that doesn't exist yet, and it's the wrong shape for the
+identity fronting this venture anyway (proof-and-positioning to a small
+credible audience, not cold reach to a large one). The first move is a
+free technical write-up of this build, published where a technical
+audience can actually see it, as the cheap test for whether that audience
+exists at all before any paid product gets built on the assumption that it
+does. Monetization planning below is unchanged; it's just explicitly
+sequenced behind that test now, not ahead of it.
+
 ## v1 (now): export-and-query
 
 - Manual Timeline export from the Google Maps app, ingested to SQLite,
