@@ -1,0 +1,109 @@
+[
+  {
+    "startTime": "2026-01-01T08:00:00.000-05:00",
+    "endTime": "2026-01-01T09:30:00.000-05:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "topCandidate": {
+        "probability": "0.900000",
+        "semanticType": "Home",
+        "placeID": "TESTPLACE_HOME_0001",
+        "placeLocation": "geo:1.000000,1.000000"
+      },
+      "probability": "0.850000"
+    }
+  },
+  {
+    "startTime": "2026-01-01T09:30:00.000-05:00",
+    "endTime": "2026-01-01T09:50:00.000-05:00",
+    "activity": {
+      "probability": "0.800000",
+      "start": "geo:1.000000,1.000000",
+      "end": "geo:1.010000,1.010000",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.700000"
+      },
+      "distanceMeters": "1500.000000"
+    }
+  },
+  {
+    "startTime": "2026-01-01T09:50:00.000-05:00",
+    "endTime": "2026-01-01T17:00:00.000-05:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "topCandidate": {
+        "probability": "0.870000",
+        "semanticType": "Work",
+        "placeID": "TESTPLACE_WORK_0002",
+        "placeLocation": "geo:1.010000,1.010000"
+      },
+      "probability": "0.800000"
+    }
+  },
+  {
+    "startTime": "2026-01-01T17:00:00.000-05:00",
+    "endTime": "2026-01-01T17:25:00.000-05:00",
+    "activity": {
+      "probability": "0.750000",
+      "start": "geo:1.010000,1.010000",
+      "end": "geo:1.000000,1.000000",
+      "topCandidate": {
+        "type": "in passenger vehicle",
+        "probability": "0.650000"
+      },
+      "distanceMeters": "4200.000000"
+    }
+  },
+  {
+    "startTime": "2026-01-01T17:25:00.000-05:00",
+    "endTime": "2026-01-02T07:30:00.000-05:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "topCandidate": {
+        "probability": "0.900000",
+        "semanticType": "Home",
+        "placeID": "TESTPLACE_HOME_0001",
+        "placeLocation": "geo:1.000000,1.000000"
+      },
+      "probability": "0.850000"
+    }
+  },
+  {
+    "startTime": "2026-01-01T12:00:00.000Z",
+    "endTime": "2026-01-01T12:30:00.000Z",
+    "timelinePath": [
+      {"point": "geo:1.010000,1.010000", "durationMinutesOffsetFromStartTime": "0"},
+      {"point": "geo:1.011000,1.011000", "durationMinutesOffsetFromStartTime": "15"},
+      {"point": "geo:1.012000,1.012000", "durationMinutesOffsetFromStartTime": "30"}
+    ]
+  },
+  {
+    "startTime": "2026-01-02T08:00:00.000-05:00",
+    "endTime": "2026-01-02T08:15:00.000-05:00",
+    "activity": {
+      "probability": "0.700000",
+      "start": "geo:1.000000,1.000000",
+      "end": "geo:1.003000,1.003000",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.600000"
+      },
+      "distanceMeters": "500.000000"
+    }
+  },
+  {
+    "startTime": "2026-01-02T08:15:00.000-05:00",
+    "endTime": "2026-01-02T08:45:00.000-05:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "topCandidate": {
+        "probability": "0.400000",
+        "semanticType": "Unknown",
+        "placeID": "TESTPLACE_CAFE_0003",
+        "placeLocation": "geo:1.003000,1.003000"
+      },
+      "probability": "0.450000"
+    }
+  }
+]
