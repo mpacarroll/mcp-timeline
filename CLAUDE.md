@@ -15,7 +15,7 @@ This repository uses the shared [ai-instructions](https://github.com/mpacarroll/
 
 ## Claude Code setup (automatic)
 
-The checked-in `.claude/settings.json` pins the `mpacarroll-ai` plugin marketplace and enables the `carroll-core` plugin. On any machine (VS Code, desktop, terminal) and in cloud sessions, accepting workspace trust provisions:
+The checked-in `.claude/settings.json` pins the `mpacarroll-ai` plugin marketplace and enables the `carroll-core` plugin, Anthropic's official `claude-plugins-official` marketplace with `claude-code-setup` enabled (read only codebase analysis; ask it to recommend automations for a repo), and `ui-ux-pro-max-skill` with `ui-ux-pro-max` enabled (local searchable UI/UX design database: styles, palettes, font pairings, charts; no network calls). On any machine (VS Code, desktop, terminal) and in cloud sessions, accepting workspace trust provisions:
 
 - the core operating rules, injected into context at session start,
 - all shared skills (`design-gate`, `coding-workflow`, `commit-push-pr`, `code-review`, `feature-implementation`, `docs-sync`, and the rest),
@@ -29,7 +29,7 @@ The canonical source is [`global/`](https://github.com/mpacarroll/ai-instruction
 
 - Move, do not stall. Two genuine attempts, then pivot.
 - Never substitute demo data when a live action fails. Retry, then report failure.
-- Never approve PRs. Open as draft. Never merge.
+- Open every PR as draft. When ready, merge directly; ask first only if the change is risky or an external client has repo access.
 - No employer references in commits, PR descriptions, code, or generated docs.
 - Tests and docs are part of the deliverable, not a follow-up.
 - American English spelling. No em dashes. No exclamation points.
