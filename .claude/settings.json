@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "mpacarroll-ai": {
+      "source": {
+        "source": "github",
+        "repo": "mpacarroll/ai-instructions"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "carroll-core@mpacarroll-ai": true
+  }
+}
