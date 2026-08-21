@@ -10,6 +10,7 @@ data/
 apple_health_export/
 export.xml
 *.gpx
+captures/
 !tests/fixtures/**
 
 __pycache__/
