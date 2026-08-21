@@ -1,4 +1,5 @@
-# Real location data never enters this repo. Synthetic fixtures in tests/ only.
+# Real location/health data never enters this repo. Synthetic fixtures in
+# tests/fixtures/ only (explicitly un-ignored below).
 *.db
 *.sqlite
 *.sqlite3
@@ -6,6 +7,10 @@ location-history*.json
 locationhistory*.json
 Takeout*/
 data/
+apple_health_export/
+export.xml
+*.gpx
+!tests/fixtures/**
 
 __pycache__/
 *.pyc

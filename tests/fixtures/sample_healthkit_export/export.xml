@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fully synthetic Apple Health export fixture for tests. No real data:
+     coordinates, dates, and source names below are all invented. -->
+<HealthData locale="en_US">
+ <ExportDate value="2026-02-06 08:00:00 -0500"/>
+ <Record type="HKQuantityTypeIdentifierStepCount" sourceName="iPhone" unit="count"
+         startDate="2026-02-01 06:00:00 -0500" endDate="2026-02-01 06:01:00 -0500"
+         value="120"/>
+ <Workout workoutActivityType="HKWorkoutActivityTypeRunning" duration="30"
+          durationUnit="min" totalDistance="5" totalDistanceUnitName="km"
+          sourceName="Test Watch" startDate="2026-02-01 06:00:00 -0500"
+          endDate="2026-02-01 06:30:00 -0500">
+  <WorkoutRoute sourceName="Test Watch" startDate="2026-02-01 06:00:00 -0500"
+                endDate="2026-02-01 06:30:00 -0500">
+   <FileReference file="/workout-routes/route_2026-02-01_6.00am.gpx"/>
+  </WorkoutRoute>
+ </Workout>
+ <Workout workoutActivityType="HKWorkoutActivityTypeCycling" duration="45"
+          durationUnit="min" totalDistance="15" totalDistanceUnitName="km"
+          sourceName="Test Watch" startDate="2026-02-02 07:00:00 -0500"
+          endDate="2026-02-02 07:45:00 -0500"/>
+ <Workout workoutActivityType="HKWorkoutActivityTypeFunctionalStrengthTraining"
+          duration="50" durationUnit="min" sourceName="Test Watch"
+          startDate="2026-02-03 18:00:00 -0500" endDate="2026-02-03 18:50:00 -0500"/>
+ <Workout workoutActivityType="HKWorkoutActivityTypeWalking" duration="30"
+          durationUnit="min" totalDistance="2" totalDistanceUnitName="km"
+          sourceName="Test Phone" startDate="2026-02-04 23:15:00 -0500"
+          endDate="2026-02-04 23:45:00 -0500"/>
+ <Workout workoutActivityType="HKWorkoutActivityTypeStairClimbing" duration="20"
+          durationUnit="min" sourceName="Test Watch"
+          startDate="2026-02-05 12:00:00 -0500" endDate="2026-02-05 12:20:00 -0500"/>
+</HealthData>

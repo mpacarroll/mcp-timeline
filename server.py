@@ -21,7 +21,8 @@ from mcp.server import MCPServer
 DB_PATH = os.environ.get("TIMELINE_DB", "timeline.db")
 
 MODES = ["walking", "in subway", "in passenger vehicle", "in bus", "in train",
-         "in tram", "cycling", "flying"]
+         "in tram", "cycling", "flying", "running", "swimming", "hiking",
+         "strength_training", "yoga", "elliptical", "rowing"]
 
 server = MCPServer(
     name="timeline",
@@ -54,17 +55,22 @@ def _haversine_m(lat1, lng1, lat2, lng2):
 @server.tool()
 def activity_stats(mode: str, start_date: str, end_date: str,
                    group_by: str = "month") -> dict[str, Any]:
-    """Summarize movement for one transport mode over a local-date range.
+    """Summarize movement for one transport mode or workout type over a
+    local-date range.
 
     Use for questions like "how much did I walk in March" or "average subway
-    time per week". mode must be one of: walking, in subway, in passenger
-    vehicle, in bus, in train, in tram, cycling, flying. start_date and
-    end_date are inclusive YYYY-MM-DD local dates; group_by is day, week, or
-    month. Returns totals (km, hours, active days) plus one row per period.
-    Not for "where was I" questions; use day_summary for those.
+    time per week". mode is commonly one of: walking, in subway, in
+    passenger vehicle, in bus, in train, in tram, cycling, flying (Google
+    Timeline's inferred segments), or running, swimming, hiking,
+    strength_training, yoga, elliptical, rowing (Apple Health workouts).
+    Other values are accepted too, since new data sources add new modes over
+    time; an unrecognized or empty-for-this-range mode returns a valid
+    result with zero totals and a note listing modes that do have data,
+    rather than an error. start_date and end_date are inclusive YYYY-MM-DD
+    local dates; group_by is day, week, or month. Returns totals (km, hours,
+    active days) plus one row per period. Not for "where was I" questions;
+    use day_summary for those.
     """
-    if mode not in MODES:
-        raise ValueError(f"Unknown mode {mode!r}. Valid modes: {', '.join(MODES)}")
     group_expr = {"day": "local_date",
                   "week": "strftime('%Y-W%W', local_date)",
                   "month": "substr(local_date, 1, 7)"}.get(group_by)
@@ -86,15 +92,21 @@ def activity_stats(mode: str, start_date: str, end_date: str,
             " WHERE mode = ? AND local_date BETWEEN ? AND ?"
             f" GROUP BY {group_expr} ORDER BY p",
             (mode, start_date, end_date))]
+    result = {"mode": mode, "start_date": start_date, "end_date": end_date,
+              "total_km": round(totals["m"] / 1000, 1),
+              "total_hours": round(totals["min"] / 60, 1),
+              "active_days": totals["active_days"],
+              "avg_min_per_active_day":
+                  round(totals["min"] / totals["active_days"], 1)
+                  if totals["active_days"] else 0,
+              "by_period": periods}
+    if not totals["segments"]:
+        known = [r["mode"] for r in
+                 db.execute("SELECT DISTINCT mode FROM activities ORDER BY mode")]
+        result["note"] = (f"no data for mode {mode!r} in this range; modes "
+                           f"with data in the database: {', '.join(known) or 'none'}")
     db.close()
-    return {"mode": mode, "start_date": start_date, "end_date": end_date,
-            "total_km": round(totals["m"] / 1000, 1),
-            "total_hours": round(totals["min"] / 60, 1),
-            "active_days": totals["active_days"],
-            "avg_min_per_active_day":
-                round(totals["min"] / totals["active_days"], 1)
-                if totals["active_days"] else 0,
-            "by_period": periods}
+    return result
 
 
 @server.tool()
