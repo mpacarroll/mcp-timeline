@@ -204,4 +204,18 @@ def place_history(place: str, limit: int = 20) -> dict[str, Any]:
 
 
 if __name__ == "__main__":
-    server.run("stdio")
+    transport = os.environ.get("MCP_TRANSPORT", "stdio")
+    if transport == "streamable-http":
+        # No application-level auth here on purpose: the SDK's token_verifier
+        # cannot be used standalone (it requires full AuthSettings, i.e. a real
+        # OAuth issuer with discovery/resource metadata endpoints), which is
+        # more infrastructure than a single-user personal tool needs. Access
+        # control belongs at the network layer instead (e.g. Cloudflare Access
+        # in front of the tunnel exposing this port) rather than fought into
+        # this file. Never expose this transport without something in front
+        # of it gating access; there is nothing in this process doing that.
+        host = os.environ.get("MCP_HOST", "127.0.0.1")
+        port = int(os.environ.get("MCP_PORT", "8000"))
+        server.run("streamable-http", host=host, port=port)
+    else:
+        server.run("stdio")
