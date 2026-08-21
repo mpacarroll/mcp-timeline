@@ -41,12 +41,24 @@ if not TOKEN:
 
 
 class Handler(http.server.BaseHTTPRequestHandler):
+    # Declaring Content-Length on every response (below) makes the response
+    # boundary explicit instead of relying on connection-close to signal
+    # end-of-body -- the latter looked fine to curl directly, but produced
+    # an "HTTP/2 stream not closed cleanly" warning once Cloudflare's tunnel
+    # was translating HTTP/2 (client-facing) to HTTP/1.0 (this process's
+    # default). HTTP/1.1 plus an explicit length is unambiguous either way.
+    protocol_version = "HTTP/1.1"
+
+    def _respond(self, status, body: bytes):
+        self.send_response(status)
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
     def do_POST(self):
         auth = self.headers.get("Authorization", "")
         if auth != f"Bearer {TOKEN}":
-            self.send_response(401)
-            self.end_headers()
-            self.wfile.write(b"unauthorized")
+            self._respond(401, b"unauthorized")
             return
 
         length = int(self.headers.get("Content-Length", 0))
@@ -61,9 +73,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
             f.write(body)
 
         print(f"captured {len(body)} bytes -> {out_path}")
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(b"ok")
+        self._respond(200, b"ok")
 
     def log_message(self, fmt, *args):
         pass  # default logs to stderr per-request; the capture print above is enough
