@@ -17,6 +17,7 @@ import sqlite3
 from typing import Any
 
 from mcp.server import MCPServer
+from mcp.server.transport_security import TransportSecuritySettings
 
 DB_PATH = os.environ.get("TIMELINE_DB", "timeline.db")
 
@@ -228,6 +229,21 @@ if __name__ == "__main__":
         # of it gating access; there is nothing in this process doing that.
         host = os.environ.get("MCP_HOST", "127.0.0.1")
         port = int(os.environ.get("MCP_PORT", "8000"))
-        server.run("streamable-http", host=host, port=port)
+
+        # The SDK's own DNS-rebinding protection rejects any Host header
+        # other than localhost variants when bound to 127.0.0.1 -- correct
+        # by default, but it also blocks the public hostname a tunnel
+        # forwards once one is actually in front of this process. Widen the
+        # allowlist to include it rather than disabling the protection.
+        public_host = os.environ.get("MCP_PUBLIC_HOST")
+        transport_security = None
+        if public_host:
+            transport_security = TransportSecuritySettings(
+                allowed_hosts=["127.0.0.1:*", "localhost:*", "[::1]:*", public_host],
+                allowed_origins=["http://127.0.0.1:*", "http://localhost:*",
+                                  "http://[::1]:*", f"https://{public_host}"])
+
+        server.run("streamable-http", host=host, port=port,
+                   transport_security=transport_security)
     else:
         server.run("stdio")

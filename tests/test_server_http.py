@@ -10,6 +10,8 @@ connectors use; stdio-only testing does not exercise it. Run:
 """
 
 import asyncio
+import http.client
+import json
 import os
 import socket
 import sys
@@ -99,6 +101,71 @@ class HttpTransportTests(unittest.TestCase):
         result = self.call("visits_near", {"lat": 1.0, "lng": 1.0, "radius_m": 50})
         self.assertEqual(result.structured_content["result"][0]["place_id"],
                           "TESTPLACE_HOME_0001")
+
+
+class PublicHostAllowlistTests(unittest.TestCase):
+    """MCP_PUBLIC_HOST must widen the SDK's DNS-rebinding Host-header check
+    to admit a tunnel's public hostname, without disabling the check for
+    everything else -- an arbitrary Host header must still be rejected."""
+
+    PUBLIC_HOST = "fake-tunnel.example.com"
+
+    @classmethod
+    def setUpClass(cls):
+        cls.port = free_port()
+        env = os.environ.copy()
+        env["MCP_TRANSPORT"] = "streamable-http"
+        env["MCP_HOST"] = "127.0.0.1"
+        env["MCP_PORT"] = str(cls.port)
+        env["MCP_PUBLIC_HOST"] = cls.PUBLIC_HOST
+        # No TIMELINE_DB needed: these requests fail DNS-rebinding validation
+        # (or don't) before any tool ever touches the database.
+
+        import subprocess
+        server_py = os.path.join(os.path.dirname(os.path.dirname(
+            os.path.abspath(__file__))), "server.py")
+        cls.proc = subprocess.Popen(
+            [sys.executable, server_py], env=env,
+            stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+
+        deadline = time.time() + 10
+        while time.time() < deadline:
+            try:
+                with socket.create_connection(("127.0.0.1", cls.port), timeout=0.5):
+                    break
+            except OSError:
+                time.sleep(0.2)
+        else:
+            cls.proc.terminate()
+            raise RuntimeError("server did not start listening in time")
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.proc.terminate()
+        cls.proc.wait(timeout=5)
+
+    def post_with_host_header(self, host_header):
+        conn = http.client.HTTPConnection("127.0.0.1", self.port, timeout=5)
+        body = json.dumps({"jsonrpc": "2.0", "id": 1, "method": "initialize",
+                           "params": {"protocolVersion": "2024-11-05",
+                                      "capabilities": {},
+                                      "clientInfo": {"name": "test", "version": "1.0"}}})
+        conn.request("POST", "/mcp", body=body, headers={
+            "Host": host_header, "Content-Type": "application/json",
+            "Accept": "application/json, text/event-stream"})
+        resp = conn.getresponse()
+        status, text = resp.status, resp.read().decode()
+        conn.close()
+        return status, text
+
+    def test_configured_public_host_is_allowed(self):
+        status, text = self.post_with_host_header(self.PUBLIC_HOST)
+        self.assertNotEqual(status, 421, f"public host wrongly rejected: {text!r}")
+
+    def test_unrelated_host_header_still_rejected(self):
+        status, text = self.post_with_host_header("some-other-host.example.com")
+        self.assertEqual(status, 421)
+        self.assertIn("Invalid Host header", text)
 
 
 if __name__ == "__main__":
