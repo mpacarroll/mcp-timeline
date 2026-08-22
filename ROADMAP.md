@@ -20,18 +20,40 @@ sequenced behind that test now, not ahead of it.
   queried through the four MCP tools. Ships first; validates the product
   experience before any app work.
 
+## v1.1 (now): Apple Health workouts
+
+- `ingest_healthkit.py` ships: reads a Health app export (`export.xml`
+  plus `workout-routes/*.gpx`) and writes workouts into the same
+  `activities`/`path_points` tables ingest.py uses, tagged
+  `source=healthkit`. Covers Apple Watch runs, rides, swims, and any
+  other tracked session with workout-grade GPS, without a native
+  collector app: manual export, same as Timeline's v1. Required a real
+  schema change (a `source` column plus per-source rebuild instead of a
+  full-table rebuild) so two importers can coexist in one database; see
+  `schema.py` and the `python-mcp-server` stack convention for the
+  gotcha this closed.
+- Phone/Watch access to the index itself (streamable-HTTP transport,
+  tunneled and access-controlled) is tracked separately; see the open
+  PR adding it to `server.py`.
+
 ## v2: native collector app, Apple devices first
 
-- The collector app targets the whole Apple device family, not just
-  iPhone. Apple Watch matters: watchOS location plus workout-grade GPS
-  extends coverage to phone-free runs and rides, and HealthKit workout
-  routes (HKWorkoutRoute) are themselves a candidate importer since
-  Apple already records them.
-- Collector data replaces the manual export step; it writes the same
-  SQLite schema. The schema is the contract, the server does not change.
+- Manual export-then-ingest (v1, v1.1) still requires opening an app and
+  tapping export; a native collector removes that step entirely and can
+  pull continuously instead of point-in-time. Same schema contract:
+  collector data is one more importer, the server does not change.
 - Monetization lives here (paid collector, open protocol). Repo stays
   private until v1 is solid and outside-business clearance is done,
   then flips public.
+
+## Up next: Ultrahuman ring, AirTags
+
+Operator decision 2026-08-21: after HealthKit, add an Ultrahuman importer
+(sleep, activity, and recovery data via their developer API; blocked on
+applying to that program) and an AirTags/Find My importer (no official
+API; a community decryption path exists but is fragile, lowest priority
+of the two). Same schema contract as HealthKit: a new `source` value, no
+server changes.
 
 ## Parked for later versions
 

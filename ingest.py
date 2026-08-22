@@ -20,58 +20,9 @@ import sqlite3
 import sys
 from datetime import datetime, timezone
 
-SCHEMA = """
-CREATE TABLE places (
-    place_id      TEXT PRIMARY KEY,
-    lat           REAL NOT NULL,
-    lng           REAL NOT NULL,
-    semantic_type TEXT,               -- Home / Work / Unknown / ...
-    resolved_name TEXT,               -- filled lazily, never by ingest
-    visit_count   INTEGER NOT NULL,
-    first_seen    TEXT NOT NULL,      -- UTC ISO-8601
-    last_seen     TEXT NOT NULL
-);
+import schema
 
-CREATE TABLE visits (
-    id            INTEGER PRIMARY KEY,
-    place_id      TEXT REFERENCES places(place_id),
-    start_utc     TEXT NOT NULL,
-    end_utc       TEXT NOT NULL,
-    start_local   TEXT NOT NULL,      -- local wall-clock, for display
-    end_local     TEXT NOT NULL,
-    local_date    TEXT NOT NULL,      -- date in the device's own offset; grouping key
-    duration_min  REAL NOT NULL,
-    probability   REAL
-);
-
-CREATE TABLE activities (
-    id            INTEGER PRIMARY KEY,
-    mode          TEXT NOT NULL,      -- walking / in subway / flying / ...
-    start_utc     TEXT NOT NULL,
-    end_utc       TEXT NOT NULL,
-    start_local   TEXT NOT NULL,      -- local wall-clock, for display
-    end_local     TEXT NOT NULL,
-    local_date    TEXT NOT NULL,
-    duration_min  REAL NOT NULL,
-    distance_m    REAL,
-    start_lat     REAL, start_lng    REAL,
-    end_lat       REAL, end_lng      REAL,
-    probability   REAL
-);
-
-CREATE TABLE path_points (
-    id            INTEGER PRIMARY KEY,
-    ts_utc        TEXT NOT NULL,      -- segment start + minute offset; UTC only,
-    lat           REAL NOT NULL,      -- the export gives no local offset for paths
-    lng           REAL NOT NULL
-);
-
-CREATE INDEX idx_visits_local_date     ON visits(local_date);
-CREATE INDEX idx_visits_place          ON visits(place_id);
-CREATE INDEX idx_activities_local_date ON activities(local_date);
-CREATE INDEX idx_activities_mode       ON activities(mode);
-CREATE INDEX idx_path_points_ts        ON path_points(ts_utc);
-"""
+SOURCE = "google_timeline"
 
 
 def parse_ts(s):
@@ -108,9 +59,14 @@ def ingest(export_path, db_path):
                  "Is this the iOS on-device Timeline export?")
 
     db = sqlite3.connect(db_path)
-    db.executescript("DROP TABLE IF EXISTS places; DROP TABLE IF EXISTS visits;"
-                     "DROP TABLE IF EXISTS activities; DROP TABLE IF EXISTS path_points;")
-    db.executescript(SCHEMA)
+    # places/visits have exactly one writer (this importer), so a full
+    # rebuild is safe. activities/path_points are shared with other
+    # importers (e.g. ingest_healthkit.py): only this source's own rows
+    # get cleared, never the whole table.
+    db.executescript("DROP TABLE IF EXISTS places; DROP TABLE IF EXISTS visits;")
+    schema.ensure_schema(db)
+    db.execute("DELETE FROM activities WHERE source = ?", (SOURCE,))
+    db.execute("DELETE FROM path_points WHERE source = ?", (SOURCE,))
 
     skipped = 0
     places = {}  # place_id -> aggregate, built from visits only
@@ -147,11 +103,11 @@ def ingest(export_path, db_path):
                 s_lat, s_lng = parse_geo(act["start"]) if "start" in act else (None, None)
                 e_lat, e_lng = parse_geo(act["end"]) if "end" in act else (None, None)
                 db.execute(
-                    "INSERT INTO activities (mode, start_utc, end_utc, start_local,"
-                    " end_local, local_date, duration_min, distance_m, start_lat,"
-                    " start_lng, end_lat, end_lng, probability)"
-                    " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                    (act.get("topCandidate", {}).get("type", "unknown"),
+                    "INSERT INTO activities (source, mode, start_utc, end_utc,"
+                    " start_local, end_local, local_date, duration_min, distance_m,"
+                    " start_lat, start_lng, end_lat, end_lng, probability)"
+                    " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (SOURCE, act.get("topCandidate", {}).get("type", "unknown"),
                      to_utc_iso(start), to_utc_iso(end), start_hms, end_hms,
                      local_date, duration_min,
                      opt_float(act.get("distanceMeters")), s_lat, s_lng, e_lat, e_lng,
@@ -164,8 +120,9 @@ def ingest(export_path, db_path):
                     ts = start.timestamp() + offset_min * 60
                     ts_iso = datetime.fromtimestamp(ts, tz=timezone.utc).strftime(
                         "%Y-%m-%dT%H:%M:%SZ")
-                    db.execute("INSERT INTO path_points (ts_utc, lat, lng) VALUES (?,?,?)",
-                               (ts_iso, lat, lng))
+                    db.execute(
+                        "INSERT INTO path_points (source, ts_utc, lat, lng) VALUES (?,?,?,?)",
+                        (SOURCE, ts_iso, lat, lng))
             else:
                 skipped += 1
         except (KeyError, ValueError, TypeError):
@@ -179,9 +136,13 @@ def ingest(export_path, db_path):
              to_utc_iso(p["first_seen"]), to_utc_iso(p["last_seen"])))
 
     db.commit()
-    for table in ("places", "visits", "activities", "path_points"):
+    for table in ("places", "visits"):
         n = db.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
         print(f"{table:12s} {n:6d}")
+    for table in ("activities", "path_points"):
+        n = db.execute(f"SELECT COUNT(*) FROM {table} WHERE source = ?",
+                        (SOURCE,)).fetchone()[0]
+        print(f"{table:12s} {n:6d}  (source={SOURCE})")
     print(f"{'skipped':12s} {skipped:6d}")
     db.close()
 

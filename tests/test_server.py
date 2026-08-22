@@ -66,7 +66,11 @@ class ServerToolTests(unittest.TestCase):
             "end_date": "2026-01-02", "group_by": "day"})
         self.assertAlmostEqual(result["total_km"], 2.0)  # 1500m + 500m
 
-    def test_activity_stats_rejects_bad_mode(self):
+    def test_activity_stats_unknown_mode_is_valid_empty_not_error(self):
+        # A mode with no data (typo, or a data source not yet ingested) is
+        # not a protocol error: other importers add modes over time, so the
+        # server can't validate against a fixed list. It comes back as a
+        # zero-total result with a note naming modes that do have data.
         async def run():
             params = StdioServerParameters(
                 command=sys.executable, args=[SERVER],
@@ -78,7 +82,9 @@ class ServerToolTests(unittest.TestCase):
                         "mode": "teleporting", "start_date": "2026-01-01",
                         "end_date": "2026-01-02"})
         result = asyncio.run(run())
-        self.assertTrue(result.is_error)
+        self.assertFalse(result.is_error)
+        self.assertEqual(result.structured_content["total_km"], 0)
+        self.assertIn("walking", result.structured_content["note"])
 
     def test_day_summary_orders_chronologically(self):
         result = self.call("day_summary", {"date": "2026-01-01"})

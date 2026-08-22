@@ -19,7 +19,15 @@ intentionally out of scope for now.
    python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
    .venv/bin/python ingest.py /path/to/location-history.json timeline.db
    ```
-3. Register the server with your MCP client (Claude Code shown):
+3. Optional: add Apple Health workouts (run, ride, swim, and other tracked
+   sessions, including GPS routes from Apple Watch) to the same index.
+   Health app -> profile icon -> Export All Health Data, unzip it, then:
+   ```bash
+   .venv/bin/python ingest_healthkit.py /path/to/apple_health_export timeline.db
+   ```
+   Both importers write into the same database without touching each
+   other's rows; run either, both, or neither, in any order.
+4. Register the server with your MCP client (Claude Code shown):
    ```bash
    claude mcp add timeline -e TIMELINE_DB=/path/to/timeline.db -- \
        /path/to/.venv/bin/python /path/to/server.py
@@ -29,8 +37,8 @@ intentionally out of scope for now.
 
 | Tool | Answers |
 |---|---|
-| `activity_stats` | How much did I walk/drive/fly, and when? |
-| `day_summary` | Where was I on a given day? |
+| `activity_stats` | How much did I walk/drive/fly/run/swim, and when? |
+| `day_summary` | Where was I on a given day, and what did I do? |
 | `visits_near` | Have I been near these coordinates before? |
 | `place_history` | Every visit to one place. |
 
@@ -47,10 +55,12 @@ in the roadmap.
 
 ## Contributing
 
-The schema in `ingest.py` is the contract between importers and the server:
-a new data source (Android's export format, a native collector app) is a new
-importer that writes the same four tables, nothing else needs to change.
-Issues and pull requests welcome.
+The schema in `schema.py` is the contract between importers and the server:
+a new data source (Android's export format, an Ultrahuman ring, a native
+collector app) is a new importer that writes the same tables, tagging its
+own rows with a `source` value and rebuilding only those rows on each run.
+The server and other importers never need to change for it. Issues and
+pull requests welcome.
 
 ## License
 
