@@ -123,6 +123,8 @@ fi
 mkdir -p "$AGENTS_DIR"
 [[ "$MODE" == "dry-run" ]] || mkdir -p "$LOG_DIR"
 
+LOAD_FAILURES=()
+
 xml_escape() { printf '%s' "$1" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'; }
 
 # write_plist <label> <script> <env-pairs...> -- <script-args...>
@@ -171,9 +173,20 @@ write_plist() {
   chmod 600 "$plist"
   unload_agent "$label"
   if [[ "$MODE" != "dry-run" ]]; then
-    launchctl bootstrap "gui/$(id -u)" "$plist" 2>/dev/null || launchctl load "$plist"
+    # launchctl load returns 0 even when it prints "Load failed", so its exit
+    # status cannot be trusted. Ask launchctl afterwards whether the job is
+    # actually registered, rather than reporting a success we never checked.
+    launchctl bootstrap "gui/$(id -u)" "$plist" 2>/dev/null \
+      || launchctl load "$plist" 2>/dev/null || true
+    if launchctl list 2>/dev/null | grep -q "[[:space:]]$label\$"; then
+      echo "loaded  $label"
+    else
+      echo "FAILED to load $label (plist written to $plist)"
+      LOAD_FAILURES+=("$label")
+    fi
+  else
+    echo "wrote $plist"
   fi
-  echo "wrote $plist"
 }
 
 write_plist "$SERVER_LABEL" "server.py" \
@@ -204,20 +217,34 @@ if [[ "$MODE" == "dry-run" ]]; then
 fi
 
 echo
-echo "All three services are installed and start at login."
+if [[ ${#LOAD_FAILURES[@]} -gt 0 ]]; then
+  echo
+  echo "WARNING: ${#LOAD_FAILURES[@]} service(s) did not load: ${LOAD_FAILURES[*]}"
+  echo "Most often something else is already bound to the port, commonly a copy"
+  echo "still running from a terminal. Check with:"
+  echo "  lsof -i :$MCP_PORT -i :$HEALTH_PORT -i :$OWNTRACKS_PORT"
+  echo "and read the matching .err file in $LOG_DIR"
+  echo
+else
+  echo
+  echo "All three services loaded and will start at login."
+fi
 echo
 echo "  status:  launchctl list | grep mcp-timeline"
 echo "  logs:    tail -f $LOG_DIR/*.log"
 echo "  remove:  ./deploy/install-macos.sh --uninstall"
 echo
-echo "OwnTracks app (Settings -> Connection):"
-echo "  Mode:    HTTP"
-echo "  URL:     https://<your-ingest-hostname>/"
-echo "  Header:  Authorization: Bearer $OWNTRACKS_TOKEN"
+# Deliberately not echoing the tokens. Printing a secret to the terminal
+# puts it in scrollback, and in any transcript pasted somewhere for help,
+# which is how both of these leaked once already. Print where to read them
+# instead, so copying one is a decision rather than an accident.
+echo "Endpoints:"
+echo "  location:  http://localhost:$OWNTRACKS_PORT   (OwnTracks app posts here)"
+echo "  health:    http://localhost:$HEALTH_PORT   (captures to $CAPTURE_DIR)"
 echo
-echo "Apple Health capture endpoint:"
-echo "  Port:    $HEALTH_PORT   (captures to $CAPTURE_DIR)"
-echo "  Header:  Authorization: Bearer $WEBHOOK_TOKEN"
+echo "Point one tunnel public hostname at each."
 echo
-echo "Point one tunnel hostname at http://localhost:$OWNTRACKS_PORT (location)"
-echo "and another at http://localhost:$HEALTH_PORT (health capture)."
+echo "Bearer tokens are in $ENV_FILE and are not printed here."
+echo "Read one when you need it, for example:"
+echo "  grep '^OWNTRACKS_TOKEN=' $ENV_FILE | cut -d= -f2"
+echo "  grep '^WEBHOOK_TOKEN=' $ENV_FILE | cut -d= -f2"
