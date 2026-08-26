@@ -25,11 +25,13 @@ Then in the OwnTracks app, Settings:
     Password:  the same secret
     Authentication and Password toggles: on
 
-The iOS app authenticates with HTTP Basic and cannot send a custom
-Authorization header, so the secret goes in the Password field. Basic
-credentials are only base64, not encrypted, which is fine here because
-the tunnel is HTTPS end to end. Bearer is also accepted, for curl,
-tests, and any client that prefers it.
+The secret goes in the Password field because HTTP Basic is the app's
+default and the only scheme its documentation describes. Bearer is also
+accepted, for curl, tests, and the app's own HTTP Headers field under
+Expert Mode. Use one or the other: an explicit Authorization header
+overrides Basic, so a stale token left in that field keeps returning 401
+however correct the password is. Basic credentials are only base64, not
+encrypted, which is fine here because the tunnel is HTTPS end to end.
 
 Unlike server.py (read-only) this process writes to the database, so it
 gets its own bearer-token check rather than relying on a network-layer
@@ -115,9 +117,11 @@ def _authorized(header):
     """True when the request carries the shared secret.
 
     Accepts two schemes because clients differ. The OwnTracks iOS app
-    authenticates with HTTP Basic and cannot send a custom Authorization
-    header at all, so its secret arrives as the Basic password. Bearer is
-    kept for curl, the tests, and anything that prefers it.
+    uses HTTP Basic by default, which is the only scheme its documentation
+    describes, so its secret normally arrives as the Basic password. It can
+    also send an arbitrary header from its Expert Mode HTTP Headers field,
+    which the docs do not mention, and Bearer covers that as well as curl
+    and the tests.
 
     The Basic username is ignored on purpose: OwnTracks' UserID identifies
     a device, it is not a second secret, and demanding a particular value
