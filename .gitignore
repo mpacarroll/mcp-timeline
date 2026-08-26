@@ -11,6 +11,12 @@ apple_health_export/
 export.xml
 *.gpx
 captures/
+
+# Holds the OwnTracks bearer token. The .sample is the tracked one.
+deploy/mcp-timeline.env
+deploy/dry-run/
+*.plist
+
 !tests/fixtures/**
 
 __pycache__/
