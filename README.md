@@ -33,6 +33,39 @@ intentionally out of scope for now.
        /path/to/.venv/bin/python /path/to/server.py
    ```
 
+## Keeping location current, automatically
+
+Steps 1 and 3 above are one-time snapshots. A Google Timeline export in
+particular can never refresh itself: Timeline has been stored on-device
+and encrypted since 2025, with no API and no Shortcuts action on the
+export button, so the data it produces starts aging the moment you save
+it.
+
+`owntracks_receiver.py` closes that gap without any manual step.
+[OwnTracks](https://owntracks.org) is a free, open-source iOS and Android
+app that POSTs your location to an endpoint you control. Point it here
+and location keeps accumulating on its own:
+
+```bash
+OWNTRACKS_TOKEN=$(openssl rand -hex 20) TIMELINE_DB=timeline.db \
+    .venv/bin/python owntracks_receiver.py 8002
+```
+
+Then in the OwnTracks app, Settings -> Connection: set Mode to HTTP, the
+URL to your public endpoint, and add a request header
+`Authorization: Bearer <the same token>`.
+
+Fixes land in `path_points` tagged `source=owntracks`, alongside anything
+the other importers wrote. Reports less accurate than
+`OWNTRACKS_MAX_ACCURACY_M` (default 500m) are dropped rather than stored,
+since a low-accuracy fix invents movement that never happened. Repeated
+timestamps are ignored, so the app resending after a reconnect cannot
+create duplicate rows.
+
+This endpoint writes to the database, so it checks its own bearer token
+rather than relying on a network gate in front of it: an unattended phone
+app cannot complete an interactive browser login.
+
 ## Tools
 
 | Tool | Answers |
