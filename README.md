@@ -79,6 +79,46 @@ This endpoint writes to the database, so it checks its own bearer token
 rather than relying on a network gate in front of it: an unattended phone
 app cannot complete an interactive browser login.
 
+## Naming places the database does not know
+
+A raw location feed knows where you were, not what was there. Google
+Timeline shipped place identity with its exports, so `Home` and `Work`
+have names. Anywhere new comes back as coordinates, which is unhelpful
+the moment you travel.
+
+`geocode.py` resolves those on demand. Set `GEOCODE_ENABLED=1` and a
+derived stay with no known place is looked up and labeled.
+
+It is **off by default**, because it sends coordinates to OpenStreetMap's
+[Nominatim](https://nominatim.openstreetmap.org) service. Three limits
+keep that as small as possible:
+
+- Only **stays** are ever sent, never the full trail. A day sends a
+  handful of points, not the thousands in between.
+- Each coordinate is looked up **once, ever**, and cached in the
+  database. Asking about the same day repeatedly sends nothing.
+- Their usage policy (one request per second, identifying User-Agent) is
+  enforced in code rather than left to callers.
+
+A lookup that finds nothing is cached, so a genuinely nameless spot is
+not re-requested forever. A lookup that *fails* is not cached, so a
+momentary outage cannot permanently mark a real place as unidentifiable.
+
+Every reconstructed visit carries a `place_source` saying how its name
+was obtained, because the difference matters when interpreting an
+answer:
+
+| `place_source` | Means |
+|---|---|
+| `known place` | A source recorded visiting it. Strong evidence. |
+| `address lookup, not a record of visiting` | Only what sits at those coordinates. Someone stopped at that address; what they did there is inference. |
+| `coordinates only` | Nothing could be identified. |
+
+That distinction is deliberate. A 50-minute stop at an address
+containing a restaurant is not evidence of having eaten there, and the
+tool docstring instructs the model to attribute the address and reason
+openly rather than assert the activity.
+
 ## Running it unattended (macOS)
 
 Started from a terminal, these processes die when the window closes or the

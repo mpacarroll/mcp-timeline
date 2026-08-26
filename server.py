@@ -18,6 +18,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 import dwell
+import geocode
 from geo import haversine_m
 from mcp.server import MCPServer
 from mcp.server.transport_security import TransportSecuritySettings
@@ -108,10 +109,21 @@ def _derive_day_from_fixes(db, date):
                  "duration_min": round(e["duration_min"])}
         if e["type"] == "stay":
             label, place_id = _nearest_place(db, e["lat"], e["lng"])
-            entry.update({"type": "visit", "place": label or "unrecognized place",
-                          "lat": e["lat"], "lng": e["lng"]})
-            if place_id:
+            if label:
+                # A place already known from an ingested source. Trust it
+                # over a geocode: it reflects somewhere actually visited.
+                entry.update({"type": "visit", "place": label,
+                              "place_source": "known place",
+                              "lat": e["lat"], "lng": e["lng"]})
                 entry["place_id"] = place_id
+            else:
+                geocoded = geocode.label_for(db, e["lat"], e["lng"])
+                entry.update({
+                    "type": "visit",
+                    "place": geocoded or "unidentified",
+                    "place_source": ("address lookup, not a record of visiting"
+                                     if geocoded else "coordinates only"),
+                    "lat": e["lat"], "lng": e["lng"]})
         else:
             entry.update({"type": "movement", "mode": "unknown", "km": e["km"]})
         entries.append(entry)
@@ -193,10 +205,19 @@ def day_summary(date: str) -> dict[str, Any]:
       that source's judgment.
     - a raw-fix description means the day was reconstructed here from
       continuous location fixes, by grouping them into stays and movement
-      at query time. Those entries carry coordinates, and a place name only
-      when the stay is within 150m of an already-known place. Transport
-      mode is "unknown" for these, because raw coordinates do not say
-      whether you walked or drove. Do not invent one.
+      at query time. Transport mode is "unknown" for these, because raw
+      coordinates do not say whether you walked or drove. Do not invent one.
+
+    Reconstructed visits carry a place_source saying how the name was
+    obtained, and the distinction matters when answering:
+
+    - "known place" means a source recorded visiting it. Strong evidence.
+    - "address lookup, not a record of visiting" means only that this is
+      what sits at those coordinates. It says someone stopped at that
+      address, not what they did there, and a stop near a restaurant is
+      not evidence of eating. Attribute it as the address, then reason
+      about it openly rather than stating an activity as fact.
+    - "coordinates only" means nothing could be identified. Say so.
     """
     db = _db()
     entries = []
