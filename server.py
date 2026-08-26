@@ -14,8 +14,11 @@ edit them with the same care as user-facing copy.
 import math
 import os
 import sqlite3
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
+import dwell
+from geo import haversine_m
 from mcp.server import MCPServer
 from mcp.server.transport_security import TransportSecuritySettings
 
@@ -45,12 +48,74 @@ def _label(row):
     return row["resolved_name"] or row["semantic_type"] or "unnamed place"
 
 
-def _haversine_m(lat1, lng1, lat2, lng2):
-    r = 6371000.0
-    p1, p2 = math.radians(lat1), math.radians(lat2)
-    dp, dl = math.radians(lat2 - lat1), math.radians(lng2 - lng1)
-    a = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
-    return 2 * r * math.asin(math.sqrt(a))
+def _local_day_bounds_utc(date):
+    """UTC range covering one local calendar day.
+
+    path_points stores UTC only, because not every source reports a local
+    offset. The server runs on the machine the data belongs to, so its
+    system timezone is the right one to interpret "2026-03-01" with.
+    """
+    start_local = datetime.strptime(date, "%Y-%m-%d").astimezone()
+    end_local = start_local + timedelta(days=1)
+    fmt = "%Y-%m-%dT%H:%M:%SZ"
+    return (start_local.astimezone(timezone.utc).strftime(fmt),
+            end_local.astimezone(timezone.utc).strftime(fmt))
+
+
+def _nearest_place(db, lat, lng, radius_m=150):
+    """Label a derived stay with a known place, when one is close enough.
+
+    Raw fixes carry no place identity, but the places table already knows
+    where Home and Work are. Reusing it turns "you were at 40.7128,
+    -74.0060" into "you were at Home" at no extra cost.
+    """
+    dlat = radius_m / 111320.0
+    dlng = radius_m / (111320.0 * max(math.cos(math.radians(lat)), 0.01))
+    best, best_d = None, None
+    for r in db.execute(
+            "SELECT * FROM places WHERE lat BETWEEN ? AND ? AND lng BETWEEN ? AND ?",
+            (lat - dlat, lat + dlat, lng - dlng, lng + dlng)):
+        d = haversine_m(lat, lng, r["lat"], r["lng"])
+        if d <= radius_m and (best_d is None or d < best_d):
+            best, best_d = r, d
+    return (_label(best), best["place_id"]) if best is not None else (None, None)
+
+
+def _derive_day_from_fixes(db, date):
+    """Rebuild a day from raw location fixes when no source recorded it.
+
+    Google Timeline wrote visit and activity rows because it did its own
+    inference. A continuous feed like OwnTracks only leaves breadcrumbs, so
+    days covered by it alone would otherwise read as "no data" even with
+    thousands of fixes on file.
+    """
+    start_utc, end_utc = _local_day_bounds_utc(date)
+    points = [(datetime.strptime(r["ts_utc"], "%Y-%m-%dT%H:%M:%SZ")
+               .replace(tzinfo=timezone.utc), r["lat"], r["lng"])
+              for r in db.execute(
+                  "SELECT ts_utc, lat, lng FROM path_points"
+                  " WHERE ts_utc >= ? AND ts_utc < ? ORDER BY ts_utc",
+                  (start_utc, end_utc))]
+    if not points:
+        return [], 0
+
+    entries = []
+    for e in dwell.derive_entries(points, gap_min=60):
+        local_start = e["start"].astimezone()
+        local_end = e["end"].astimezone()
+        entry = {"start": local_start.strftime("%H:%M:%S"),
+                 "end": local_end.strftime("%H:%M:%S"),
+                 "duration_min": round(e["duration_min"])}
+        if e["type"] == "stay":
+            label, place_id = _nearest_place(db, e["lat"], e["lng"])
+            entry.update({"type": "visit", "place": label or "unrecognized place",
+                          "lat": e["lat"], "lng": e["lng"]})
+            if place_id:
+                entry["place_id"] = place_id
+        else:
+            entry.update({"type": "movement", "mode": "unknown", "km": e["km"]})
+        entries.append(entry)
+    return entries, len(points)
 
 
 @server.tool()
@@ -119,6 +184,19 @@ def day_summary(date: str) -> dict[str, Any]:
     one is known (Home, Work, a resolved name) and movement segments carry
     mode and distance. A date with no data returns a valid empty timeline
     with a note, never an error.
+
+    Always check the derived_from field before describing the result, and
+    say which kind of day it was if the distinction matters:
+
+    - "recorded visits and activities" means a source did its own inference
+      (a Google Timeline export), so place names and transport modes are
+      that source's judgment.
+    - a raw-fix description means the day was reconstructed here from
+      continuous location fixes, by grouping them into stays and movement
+      at query time. Those entries carry coordinates, and a place name only
+      when the stay is within 150m of an already-known place. Transport
+      mode is "unknown" for these, because raw coordinates do not say
+      whether you walked or drove. Do not invent one.
     """
     db = _db()
     entries = []
@@ -141,11 +219,24 @@ def day_summary(date: str) -> dict[str, Any]:
             "duration_min": round(r["duration_min"]),
             "km": round((r["distance_m"] or 0) / 1000, 2),
             "sort": r["start_utc"]})
-    db.close()
     entries.sort(key=lambda e: e.pop("sort"))
     result = {"date": date, "entries": entries}
-    if not entries:
-        result["note"] = "no data recorded for this date"
+    if entries:
+        result["derived_from"] = "recorded visits and activities"
+    else:
+        # No source wrote visit or activity rows for this day. Raw fixes
+        # may still cover it, which is the normal case for any day after
+        # the last Timeline export.
+        derived, fix_count = _derive_day_from_fixes(db, date)
+        if derived:
+            result["entries"] = derived
+            result["derived_from"] = (
+                f"{fix_count} raw location fixes, grouped into stays and "
+                "movement at query time; place names come from matching "
+                "known places within 150m")
+        else:
+            result["note"] = "no data recorded for this date"
+    db.close()
     return result
 
 
@@ -166,7 +257,7 @@ def visits_near(lat: float, lng: float, radius_m: int = 100) -> list[dict]:
     for r in db.execute(
             "SELECT * FROM places WHERE lat BETWEEN ? AND ? AND lng BETWEEN ? AND ?",
             (lat - dlat, lat + dlat, lng - dlng, lng + dlng)):
-        d = _haversine_m(lat, lng, r["lat"], r["lng"])
+        d = haversine_m(lat, lng, r["lat"], r["lng"])
         if d <= radius_m:
             out.append({"place_id": r["place_id"], "label": _label(r),
                         "distance_m": round(d), "visit_count": r["visit_count"],
