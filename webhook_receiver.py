@@ -27,6 +27,7 @@ so this script does its own bearer-token check instead.
 """
 
 import http.server
+import json
 import os
 import sys
 from datetime import datetime, timezone
@@ -38,6 +39,60 @@ if not TOKEN:
     sys.exit("Set WEBHOOK_TOKEN to a shared secret before starting this "
               "receiver -- an unauthenticated write endpoint is not safe "
               "to expose through the tunnel.")
+
+
+def describe_payload(body: bytes, content_type: str = "", max_lines: int = 40):
+    """Summarize the shape of a captured payload as lines of text.
+
+    The point of this receiver is to learn an undocumented payload format,
+    and a byte count teaches nothing. This prints the structure (keys,
+    types, list lengths, one sample leaf value per path) so the format can
+    usually be read off a single capture instead of several round trips.
+
+    Sample values are truncated and only one is shown per path, since the
+    payload is real health data and this output goes to a log file.
+    """
+    if "csv" in content_type.lower():
+        text = body.decode("utf-8", "replace")
+        rows = text.splitlines()
+        out = [f"CSV, {len(rows)} lines"]
+        if rows:
+            out.append(f"header: {rows[0][:200]}")
+        return out
+
+    try:
+        data = json.loads(body)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        preview = body[:120].decode("utf-8", "replace").replace("\n", " ")
+        return [f"not JSON. first bytes: {preview!r}"]
+
+    lines = []
+
+    def walk(node, path="", depth=0):
+        if len(lines) >= max_lines:
+            return
+        if isinstance(node, dict):
+            lines.append(f"{path or '<root>'}: object with {len(node)} keys "
+                         f"({', '.join(list(node)[:8])}"
+                         f"{', ...' if len(node) > 8 else ''})")
+            for key, value in list(node.items())[:12]:
+                walk(value, f"{path}.{key}" if path else key, depth + 1)
+        elif isinstance(node, list):
+            lines.append(f"{path}: array of {len(node)}")
+            if node:
+                # One element is enough to reveal the element shape, and
+                # avoids dumping an entire day of samples into the log.
+                walk(node[0], f"{path}[0]", depth + 1)
+        else:
+            sample = repr(node)
+            if len(sample) > 60:
+                sample = sample[:57] + "..."
+            lines.append(f"{path}: {type(node).__name__} = {sample}")
+
+    walk(data)
+    if len(lines) >= max_lines:
+        lines.append(f"... truncated at {max_lines} lines; full payload is on disk")
+    return lines
 
 
 class Handler(http.server.BaseHTTPRequestHandler):
@@ -73,6 +128,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
             f.write(body)
 
         print(f"captured {len(body)} bytes -> {out_path}")
+        for line in describe_payload(body, content_type):
+            print(f"  {line}")
         self._respond(200, b"ok")
 
     def log_message(self, fmt, *args):
