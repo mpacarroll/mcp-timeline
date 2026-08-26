@@ -58,7 +58,13 @@ if not TOKEN:
 
 def init_db():
     db = sqlite3.connect(DB_PATH)
-    schema.ensure_schema(db)
+    migrated = schema.ensure_schema(db)
+    if migrated:
+        # Altering someone's database is worth saying out loud, especially
+        # here, where it happens unattended at service start.
+        print(f"migrated schema: added a source column to "
+              f"{', '.join(migrated)} (existing rows backfilled as "
+              f"{schema.LEGACY_SOURCE!r})", flush=True)
     db.commit()
     db.close()
 
