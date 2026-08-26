@@ -11,7 +11,7 @@
 #
 # Usage:
 #   ./deploy/install-macos.sh              install or reinstall
-#   ./deploy/install-macos.sh --uninstall  remove both services
+#   ./deploy/install-macos.sh --uninstall  remove all three services
 #   ./deploy/install-macos.sh --dry-run    write plists to ./deploy/dry-run
 #                                          and load nothing (works anywhere)
 #
@@ -28,6 +28,7 @@ LOG_DIR="$HOME/Library/Logs/mcp-timeline"
 
 SERVER_LABEL="com.mpacarroll.mcp-timeline.server"
 OWNTRACKS_LABEL="com.mpacarroll.mcp-timeline.owntracks"
+HEALTH_LABEL="com.mpacarroll.mcp-timeline.healthcapture"
 
 MODE="install"
 case "${1:-}" in
@@ -55,7 +56,7 @@ unload_agent() {
 }
 
 if [[ "$MODE" == "uninstall" ]]; then
-  for label in "$SERVER_LABEL" "$OWNTRACKS_LABEL"; do
+  for label in "$SERVER_LABEL" "$OWNTRACKS_LABEL" "$HEALTH_LABEL"; do
     unload_agent "$label"
     rm -f "$AGENTS_DIR/$label.plist"
     echo "removed $label"
@@ -75,12 +76,18 @@ if [[ ! -f "$ENV_FILE" ]]; then
   chmod 600 "$ENV_FILE"
   # Generate a real token up front rather than shipping a placeholder that
   # looks configured but protects nothing.
-  token="$(openssl rand -hex 20)"
+  # Each endpoint gets its own secret, so rotating or leaking one does not
+  # affect the other.
   tmp="$(mktemp)"
-  sed "s|^OWNTRACKS_TOKEN=.*|OWNTRACKS_TOKEN=$token|" "$ENV_FILE" > "$tmp"
+  cp "$ENV_FILE" "$tmp"
+  for var in OWNTRACKS_TOKEN WEBHOOK_TOKEN; do
+    tmp2="$(mktemp)"
+    sed "s|^$var=.*|$var=$(openssl rand -hex 20)|" "$tmp" > "$tmp2"
+    mv "$tmp2" "$tmp"
+  done
   mv "$tmp" "$ENV_FILE"
   chmod 600 "$ENV_FILE"
-  echo "created $ENV_FILE with a freshly generated OWNTRACKS_TOKEN"
+  echo "created $ENV_FILE with freshly generated tokens"
   echo
 fi
 
@@ -91,6 +98,8 @@ VENV_PYTHON="${VENV_PYTHON:-$REPO_DIR/.venv/bin/python}"
 TIMELINE_DB="${TIMELINE_DB:-$REPO_DIR/timeline.db}"
 MCP_PORT="${MCP_PORT:-8000}"
 OWNTRACKS_PORT="${OWNTRACKS_PORT:-8002}"
+HEALTH_PORT="${HEALTH_PORT:-8001}"
+CAPTURE_DIR="${WEBHOOK_CAPTURE_DIR:-$REPO_DIR/captures}"
 OWNTRACKS_MAX_ACCURACY_M="${OWNTRACKS_MAX_ACCURACY_M:-500}"
 MCP_PUBLIC_HOST="${MCP_PUBLIC_HOST:-}"
 
@@ -100,6 +109,7 @@ if [[ "$MODE" == "install" ]]; then
   [[ -f "$TIMELINE_DB" ]] || echo "note: no database at $TIMELINE_DB yet; the receiver creates one"
 fi
 [[ -n "${OWNTRACKS_TOKEN:-}" ]] || die "OWNTRACKS_TOKEN is empty in $ENV_FILE"
+[[ -n "${WEBHOOK_TOKEN:-}" ]] || die "WEBHOOK_TOKEN is empty in $ENV_FILE"
 # The sample ships a placeholder so the file documents itself. Treat it as
 # unset: installing with it would succeed here and then fail much later,
 # and much more confusingly, as a 421 from the server.
@@ -157,7 +167,7 @@ write_plist() {
     echo '</plist>'
   } > "$plist"
 
-  # The OwnTracks plist carries the bearer token, so keep both owner-only.
+  # Plists carry bearer tokens, so keep them owner-only.
   chmod 600 "$plist"
   unload_agent "$label"
   if [[ "$MODE" != "dry-run" ]]; then
@@ -179,6 +189,14 @@ write_plist "$OWNTRACKS_LABEL" "owntracks_receiver.py" \
   "OWNTRACKS_MAX_ACCURACY_M=$OWNTRACKS_MAX_ACCURACY_M" \
   -- "$OWNTRACKS_PORT"
 
+# Capture-only, and deliberately not writing to the database: the Apple
+# Health payload format is still unknown, so this stores raw bodies and
+# prints their structure until there is a parser worth trusting.
+write_plist "$HEALTH_LABEL" "webhook_receiver.py" \
+  "WEBHOOK_TOKEN=$WEBHOOK_TOKEN" \
+  "WEBHOOK_CAPTURE_DIR=$CAPTURE_DIR" \
+  -- "$HEALTH_PORT"
+
 if [[ "$MODE" == "dry-run" ]]; then
   echo
   echo "Dry run: nothing was loaded. Inspect the plists above."
@@ -186,7 +204,7 @@ if [[ "$MODE" == "dry-run" ]]; then
 fi
 
 echo
-echo "Both services are installed and start at login."
+echo "All three services are installed and start at login."
 echo
 echo "  status:  launchctl list | grep mcp-timeline"
 echo "  logs:    tail -f $LOG_DIR/*.log"
@@ -197,4 +215,9 @@ echo "  Mode:    HTTP"
 echo "  URL:     https://<your-ingest-hostname>/"
 echo "  Header:  Authorization: Bearer $OWNTRACKS_TOKEN"
 echo
-echo "Point a tunnel public hostname at http://localhost:$OWNTRACKS_PORT for that URL."
+echo "Apple Health capture endpoint:"
+echo "  Port:    $HEALTH_PORT   (captures to $CAPTURE_DIR)"
+echo "  Header:  Authorization: Bearer $WEBHOOK_TOKEN"
+echo
+echo "Point one tunnel hostname at http://localhost:$OWNTRACKS_PORT (location)"
+echo "and another at http://localhost:$HEALTH_PORT (health capture)."
