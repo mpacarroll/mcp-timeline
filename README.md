@@ -66,6 +66,38 @@ This endpoint writes to the database, so it checks its own bearer token
 rather than relying on a network gate in front of it: an unattended phone
 app cannot complete an interactive browser login.
 
+## Running it unattended (macOS)
+
+Started from a terminal, these processes die when the window closes or the
+machine reboots. For the MCP server that is an outage you notice. For the
+OwnTracks receiver it is worse and quieter: fixes that arrive while nothing
+is listening are gone for good, and the database just stops growing.
+
+`deploy/install-macos.sh` installs both as launchd user agents, so they
+start at login and restart if they crash:
+
+```bash
+./deploy/install-macos.sh --dry-run   # inspect the generated plists first
+./deploy/install-macos.sh             # install and load them
+```
+
+The first run creates `deploy/mcp-timeline.env` from the sample with a
+freshly generated `OWNTRACKS_TOKEN`. Set `MCP_PUBLIC_HOST` in that file to
+your tunnel hostname before installing; without it the MCP server rejects
+tunneled requests with `421 Invalid Host header`. The env file and the
+generated plists hold the token, so all three are written owner-only and
+the env file is gitignored.
+
+```bash
+launchctl list | grep mcp-timeline          # status
+tail -f ~/Library/Logs/mcp-timeline/*.log   # logs
+./deploy/install-macos.sh --uninstall       # remove both services
+```
+
+The tunnel itself is separate. `cloudflared service install` already
+registers it as its own background service, so it survives reboots on its
+own.
+
 ## Tools
 
 | Tool | Answers |
