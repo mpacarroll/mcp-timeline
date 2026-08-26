@@ -100,8 +100,15 @@ if [[ "$MODE" == "install" ]]; then
   [[ -f "$TIMELINE_DB" ]] || echo "note: no database at $TIMELINE_DB yet; the receiver creates one"
 fi
 [[ -n "${OWNTRACKS_TOKEN:-}" ]] || die "OWNTRACKS_TOKEN is empty in $ENV_FILE"
-[[ -n "$MCP_PUBLIC_HOST" ]] || die "set MCP_PUBLIC_HOST in $ENV_FILE to your tunnel hostname.
-Without it the MCP server rejects tunneled requests with 421 Invalid Host header."
+# The sample ships a placeholder so the file documents itself. Treat it as
+# unset: installing with it would succeed here and then fail much later,
+# and much more confusingly, as a 421 from the server.
+if [[ -z "$MCP_PUBLIC_HOST" || "$MCP_PUBLIC_HOST" == *example.com ]]; then
+  die "set MCP_PUBLIC_HOST in $ENV_FILE to your own tunnel hostname
+(currently ${MCP_PUBLIC_HOST:-empty}, which is the sample placeholder).
+Without a real value the MCP server rejects tunneled requests with
+421 Invalid Host header."
+fi
 
 mkdir -p "$AGENTS_DIR"
 [[ "$MODE" == "dry-run" ]] || mkdir -p "$LOG_DIR"
