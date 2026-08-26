@@ -73,8 +73,9 @@ machine reboots. For the MCP server that is an outage you notice. For the
 OwnTracks receiver it is worse and quieter: fixes that arrive while nothing
 is listening are gone for good, and the database just stops growing.
 
-`deploy/install-macos.sh` installs both as launchd user agents, so they
-start at login and restart if they crash:
+`deploy/install-macos.sh` installs all three services (MCP server,
+OwnTracks location receiver, Apple Health capture endpoint) as launchd
+user agents, so they start at login and restart if they crash:
 
 ```bash
 ./deploy/install-macos.sh --dry-run   # inspect the generated plists first
