@@ -55,11 +55,18 @@ Then in the OwnTracks app, Settings: set Mode to **HTTP**, the URL to your
 public endpoint, **UserID** to anything you like, and **Password** to the
 token, with the Authentication and Password toggles on.
 
-The token goes in the Password field rather than a header because the iOS
-app authenticates with HTTP Basic and cannot send a custom `Authorization`
-header at all. The receiver accepts Bearer too, for curl and other
-clients. Basic credentials are only base64 encoded, not encrypted, which
-is acceptable here because the tunnel is HTTPS end to end.
+The token goes in the Password field because HTTP Basic is what the app
+uses by default, and it is the only path their documentation describes.
+The receiver also accepts `Authorization: Bearer <token>`, for curl, other
+clients, and the app's own **HTTP Headers** field under Expert Mode.
+
+Pick one. An explicit `Authorization` header overrides the Basic
+credentials, so a stale token left in the HTTP Headers field will keep
+returning 401 no matter how correct the password is. Leaving that field
+empty is the simpler configuration.
+
+Basic credentials are only base64 encoded, not encrypted, which is
+acceptable here because the tunnel is HTTPS end to end.
 
 Fixes land in `path_points` tagged `source=owntracks`, alongside anything
 the other importers wrote. Reports less accurate than
