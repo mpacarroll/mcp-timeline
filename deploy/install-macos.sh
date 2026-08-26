@@ -160,6 +160,10 @@ write_plist() {
     printf '  <key>StandardErrorPath</key><string>%s</string>\n' "$(xml_escape "$LOG_DIR/$label.err")"
     echo '  <key>EnvironmentVariables</key>'
     echo '  <dict>'
+    # Python block-buffers stdout when it is a file rather than a terminal,
+    # so a long-running service's log stays empty until the buffer fills.
+    # That made a working capture endpoint look broken.
+    echo '    <key>PYTHONUNBUFFERED</key><string>1</string>'
     for pair in ${env_pairs+"${env_pairs[@]}"}; do
       printf '    <key>%s</key><string>%s</string>\n' \
         "$(xml_escape "${pair%%=*}")" "$(xml_escape "${pair#*=}")"

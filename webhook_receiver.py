@@ -127,9 +127,9 @@ class Handler(http.server.BaseHTTPRequestHandler):
         with open(out_path, "wb") as f:
             f.write(body)
 
-        print(f"captured {len(body)} bytes -> {out_path}")
+        print(f"captured {len(body)} bytes -> {out_path}", flush=True)
         for line in describe_payload(body, content_type):
-            print(f"  {line}")
+            print(f"  {line}", flush=True)
         self._respond(200, b"ok")
 
     def log_message(self, fmt, *args):
@@ -139,5 +139,6 @@ class Handler(http.server.BaseHTTPRequestHandler):
 if __name__ == "__main__":
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8001
     server = http.server.HTTPServer(("127.0.0.1", port), Handler)
-    print(f"listening on 127.0.0.1:{port}, saving captures to {CAPTURE_DIR}/")
+    print(f"listening on 127.0.0.1:{port}, saving captures to {CAPTURE_DIR}/",
+          flush=True)
     server.serve_forever()
