@@ -114,6 +114,14 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
     def do_POST(self):
         if self.headers.get("Authorization", "") != f"Bearer {TOKEN}":
+            # Logged on purpose. Without this, a phone posting with a stale
+            # token looks exactly like a phone that is not posting at all:
+            # both leave an empty log and an empty table. Never log the
+            # value that was sent, only that one arrived and was rejected.
+            supplied = self.headers.get("Authorization")
+            reason = "no Authorization header" if not supplied else "wrong token"
+            print(f"rejected a POST from {self.client_address[0]}: {reason}",
+                  flush=True)
             self._respond(401, b'{"error":"unauthorized"}')
             return
 
