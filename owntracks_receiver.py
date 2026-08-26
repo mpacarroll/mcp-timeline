@@ -18,17 +18,26 @@ Usage:
     OWNTRACKS_TOKEN=<secret> TIMELINE_DB=<path> \
         python3 owntracks_receiver.py [port]
 
-Then in the OwnTracks iOS app, Settings -> Connection:
-    Mode:  HTTP
-    URL:   https://<your-public-host>/
-    and under the request headers, add:
-           Authorization: Bearer <the same secret>
+Then in the OwnTracks app, Settings:
+    Mode:      HTTP
+    URL:       https://<your-public-host>/
+    UserID:    anything (it identifies you, it is not the secret)
+    Password:  the same secret
+    Authentication and Password toggles: on
+
+The iOS app authenticates with HTTP Basic and cannot send a custom
+Authorization header, so the secret goes in the Password field. Basic
+credentials are only base64, not encrypted, which is fine here because
+the tunnel is HTTPS end to end. Bearer is also accepted, for curl,
+tests, and any client that prefers it.
 
 Unlike server.py (read-only) this process writes to the database, so it
 gets its own bearer-token check rather than relying on a network-layer
 gate: an unattended phone app cannot complete an interactive SSO login.
 """
 
+import base64
+import hmac
 import http.server
 import json
 import os
@@ -102,6 +111,37 @@ def record_location(payload):
     return f"stored {ts_iso} ({lat:.5f},{lon:.5f}) acc={acc} trigger={trigger}"
 
 
+def _authorized(header):
+    """True when the request carries the shared secret.
+
+    Accepts two schemes because clients differ. The OwnTracks iOS app
+    authenticates with HTTP Basic and cannot send a custom Authorization
+    header at all, so its secret arrives as the Basic password. Bearer is
+    kept for curl, the tests, and anything that prefers it.
+
+    The Basic username is ignored on purpose: OwnTracks' UserID identifies
+    a device, it is not a second secret, and demanding a particular value
+    would add a failure mode without adding security.
+
+    Compared with compare_digest rather than ==, so the comparison does not
+    leak the secret's prefix through timing.
+    """
+    if not header:
+        return False
+    scheme, _, value = header.partition(" ")
+    scheme = scheme.lower()
+    if scheme == "bearer":
+        return hmac.compare_digest(value, TOKEN)
+    if scheme == "basic":
+        try:
+            decoded = base64.b64decode(value, validate=True).decode("utf-8")
+        except (ValueError, UnicodeDecodeError):
+            return False
+        _user, _, password = decoded.partition(":")
+        return hmac.compare_digest(password, TOKEN)
+    return False
+
+
 class Handler(http.server.BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
@@ -113,13 +153,19 @@ class Handler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_POST(self):
-        if self.headers.get("Authorization", "") != f"Bearer {TOKEN}":
+        if not _authorized(self.headers.get("Authorization")):
             # Logged on purpose. Without this, a phone posting with a stale
             # token looks exactly like a phone that is not posting at all:
             # both leave an empty log and an empty table. Never log the
             # value that was sent, only that one arrived and was rejected.
             supplied = self.headers.get("Authorization")
-            reason = "no Authorization header" if not supplied else "wrong token"
+            if not supplied:
+                reason = "no Authorization header"
+            else:
+                scheme = supplied.partition(" ")[0].lower()
+                reason = (f"wrong secret ({scheme} scheme)"
+                          if scheme in ("basic", "bearer")
+                          else f"unsupported auth scheme {scheme!r}")
             print(f"rejected a POST from {self.client_address[0]}: {reason}",
                   flush=True)
             self._respond(401, b'{"error":"unauthorized"}')

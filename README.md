@@ -51,9 +51,15 @@ OWNTRACKS_TOKEN=$(openssl rand -hex 20) TIMELINE_DB=timeline.db \
     .venv/bin/python owntracks_receiver.py 8002
 ```
 
-Then in the OwnTracks app, Settings -> Connection: set Mode to HTTP, the
-URL to your public endpoint, and add a request header
-`Authorization: Bearer <the same token>`.
+Then in the OwnTracks app, Settings: set Mode to **HTTP**, the URL to your
+public endpoint, **UserID** to anything you like, and **Password** to the
+token, with the Authentication and Password toggles on.
+
+The token goes in the Password field rather than a header because the iOS
+app authenticates with HTTP Basic and cannot send a custom `Authorization`
+header at all. The receiver accepts Bearer too, for curl and other
+clients. Basic credentials are only base64 encoded, not encrypted, which
+is acceptable here because the tunnel is HTTPS end to end.
 
 Fixes land in `path_points` tagged `source=owntracks`, alongside anything
 the other importers wrote. Reports less accurate than
