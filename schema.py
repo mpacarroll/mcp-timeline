@@ -37,7 +37,7 @@ CREATE INDEX IF NOT EXISTS idx_visits_local_date ON visits(local_date);
 CREATE INDEX IF NOT EXISTS idx_visits_place      ON visits(place_id);
 """
 
-SHARED_SCHEMA = """
+SHARED_TABLES = """
 CREATE TABLE IF NOT EXISTS activities (
     id            INTEGER PRIMARY KEY,
     source        TEXT NOT NULL,      -- google_timeline / healthkit / ...
@@ -61,7 +61,12 @@ CREATE TABLE IF NOT EXISTS path_points (
     lat           REAL NOT NULL,
     lng           REAL NOT NULL
 );
+"""
 
+# Built separately from the tables above, because an index on `source`
+# cannot be created until a database predating that column has been
+# migrated to have one.
+SHARED_INDEXES = """
 CREATE INDEX IF NOT EXISTS idx_activities_local_date ON activities(local_date);
 CREATE INDEX IF NOT EXISTS idx_activities_mode       ON activities(mode);
 CREATE INDEX IF NOT EXISTS idx_activities_source     ON activities(source);
@@ -69,10 +74,58 @@ CREATE INDEX IF NOT EXISTS idx_path_points_ts        ON path_points(ts_utc);
 CREATE INDEX IF NOT EXISTS idx_path_points_source    ON path_points(source);
 """
 
+# Rows written before the multi-source work all came from the Google
+# Timeline importer, since it was the only writer that existed, so that is
+# the honest value to backfill them with.
+LEGACY_SOURCE = "google_timeline"
+
+SOURCED_TABLES = ("activities", "path_points")
+
+
+def _column_names(db, table):
+    return {row[1] for row in db.execute(f"PRAGMA table_info({table})")}
+
+
+def _migrate_add_source(db):
+    """Add the `source` column to tables created before it existed.
+
+    CREATE TABLE IF NOT EXISTS silently does nothing when the table is
+    already there, so a database built by an older version keeps its old
+    shape and every later statement referencing `source` fails. Detect that
+    and alter the table instead of assuming the definition above is what is
+    actually on disk.
+
+    Returns the tables it migrated, so callers can report the change rather
+    than mutating a user's database silently.
+    """
+    migrated = []
+    for table in SOURCED_TABLES:
+        columns = _column_names(db, table)
+        if not columns or "source" in columns:
+            continue
+        # SQLite cannot add a NOT NULL column without a default, and the
+        # default doubles as the backfill for existing rows.
+        db.execute(f"ALTER TABLE {table} ADD COLUMN source TEXT NOT NULL"
+                   f" DEFAULT '{LEGACY_SOURCE}'")
+        migrated.append(table)
+    return migrated
+
 
 def ensure_schema(db):
-    """Create every table/index that doesn't already exist. Safe to call on
-    a brand-new database, one built by a different importer, or one already
-    fully populated -- idempotent either way."""
+    """Bring a database up to the current schema, whatever state it is in.
+
+    Handles three cases: a brand-new file, one already current, and one
+    created before the `source` column existed. That third case is the
+    reason this does more than run CREATE TABLE IF NOT EXISTS: that
+    statement is a no-op on an existing table, so an older database keeps
+    its old columns and any later reference to `source` fails with
+    "no such column".
+
+    Returns the list of tables migrated, empty when nothing changed.
+    """
     db.executescript(PLACES_VISITS_SCHEMA)
-    db.executescript(SHARED_SCHEMA)
+    db.executescript(SHARED_TABLES)
+    migrated = _migrate_add_source(db)
+    db.executescript(SHARED_INDEXES)
+    db.commit()
+    return migrated
