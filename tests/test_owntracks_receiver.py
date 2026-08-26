@@ -169,3 +169,65 @@ class OwnTracksReceiverTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class AuthSchemeTests(unittest.TestCase):
+    """The OwnTracks iOS app authenticates with HTTP Basic and cannot send
+    a custom Authorization header, so Basic must work. Bearer stays
+    supported for curl and other clients."""
+
+    def setUp(self):
+        import importlib
+        os.environ["OWNTRACKS_TOKEN"] = TOKEN
+        import owntracks_receiver
+        importlib.reload(owntracks_receiver)
+        self.mod = owntracks_receiver
+
+    def basic(self, user, password):
+        import base64
+        raw = f"{user}:{password}".encode()
+        return "Basic " + base64.b64encode(raw).decode()
+
+    def test_bearer_with_correct_token(self):
+        self.assertTrue(self.mod._authorized(f"Bearer {TOKEN}"))
+
+    def test_basic_with_correct_password(self):
+        self.assertTrue(self.mod._authorized(self.basic("michael", TOKEN)))
+
+    def test_basic_username_is_ignored(self):
+        # OwnTracks' UserID identifies a device, it is not a second secret.
+        for user in ("michael", "", "anything-at-all", "13"):
+            self.assertTrue(self.mod._authorized(self.basic(user, TOKEN)),
+                            f"username {user!r} should not affect the result")
+
+    def test_basic_with_wrong_password_is_rejected(self):
+        self.assertFalse(self.mod._authorized(self.basic("michael", "nope")))
+
+    def test_bearer_with_wrong_token_is_rejected(self):
+        self.assertFalse(self.mod._authorized("Bearer nope"))
+
+    def test_token_as_basic_username_does_not_authorize(self):
+        # Guards against a sloppier implementation that checked whether the
+        # secret appeared anywhere in the decoded credentials.
+        self.assertFalse(self.mod._authorized(self.basic(TOKEN, "nope")))
+
+    def test_missing_and_empty_headers(self):
+        for header in (None, "", "   "):
+            self.assertFalse(self.mod._authorized(header))
+
+    def test_unsupported_schemes_rejected(self):
+        for header in (f"Digest {TOKEN}", TOKEN, f"Token {TOKEN}"):
+            self.assertFalse(self.mod._authorized(header))
+
+    def test_scheme_is_case_insensitive(self):
+        self.assertTrue(self.mod._authorized(f"bearer {TOKEN}"))
+        self.assertTrue(self.mod._authorized(self.basic("u", TOKEN).replace(
+            "Basic", "basic", 1)))
+
+    def test_malformed_basic_payloads_do_not_raise(self):
+        import base64
+        for header in ("Basic !!!not-base64!!!",
+                       "Basic " + base64.b64encode(b"\xff\xfe").decode(),
+                       "Basic " + base64.b64encode(b"no-colon-here").decode(),
+                       "Basic "):
+            self.assertFalse(self.mod._authorized(header), header)
