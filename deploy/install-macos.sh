@@ -102,6 +102,7 @@ HEALTH_PORT="${HEALTH_PORT:-8001}"
 CAPTURE_DIR="${WEBHOOK_CAPTURE_DIR:-$REPO_DIR/captures}"
 OWNTRACKS_MAX_ACCURACY_M="${OWNTRACKS_MAX_ACCURACY_M:-500}"
 MCP_PUBLIC_HOST="${MCP_PUBLIC_HOST:-}"
+GEOCODE_ENABLED="${GEOCODE_ENABLED:-}"
 
 if [[ "$MODE" == "install" ]]; then
   [[ -x "$VENV_PYTHON" ]] || die "no Python at $VENV_PYTHON. Create the venv first:
@@ -198,7 +199,8 @@ write_plist "$SERVER_LABEL" "server.py" \
   "MCP_TRANSPORT=streamable-http" \
   "MCP_HOST=127.0.0.1" \
   "MCP_PORT=$MCP_PORT" \
-  "MCP_PUBLIC_HOST=$MCP_PUBLIC_HOST"
+  "MCP_PUBLIC_HOST=$MCP_PUBLIC_HOST" \
+  "GEOCODE_ENABLED=$GEOCODE_ENABLED"
 
 write_plist "$OWNTRACKS_LABEL" "owntracks_receiver.py" \
   "TIMELINE_DB=$TIMELINE_DB" \

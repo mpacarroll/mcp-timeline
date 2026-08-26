@@ -63,6 +63,21 @@ CREATE TABLE IF NOT EXISTS path_points (
 );
 """
 
+GEOCODE_SCHEMA = """
+-- Cache of reverse-geocoded coordinates. Separate from `places`, which
+-- means "somewhere a source said I visited" and carries visit counts and
+-- first/last-seen dates. A geocode is a fact about a coordinate, not a
+-- record of having been there, and conflating them would corrupt the
+-- visit statistics with places never actually visited.
+CREATE TABLE IF NOT EXISTS geocode_cache (
+    lat_key     REAL NOT NULL,       -- coordinates rounded, see geocode.py
+    lng_key     REAL NOT NULL,
+    label       TEXT,                -- short human label, NULL if none found
+    fetched_utc TEXT NOT NULL,
+    PRIMARY KEY (lat_key, lng_key)
+);
+"""
+
 # Built separately from the tables above, because an index on `source`
 # cannot be created until a database predating that column has been
 # migrated to have one.
@@ -125,6 +140,7 @@ def ensure_schema(db):
     """
     db.executescript(PLACES_VISITS_SCHEMA)
     db.executescript(SHARED_TABLES)
+    db.executescript(GEOCODE_SCHEMA)
     migrated = _migrate_add_source(db)
     db.executescript(SHARED_INDEXES)
     db.commit()
