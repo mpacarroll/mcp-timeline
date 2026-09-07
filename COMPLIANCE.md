@@ -2,6 +2,7 @@
 
 **Project:** mcp-timeline
 **Owner:** Michael Carroll (mpacarroll@gmail.com)
+**Entity:** MC AI Studio LLC, a New York limited liability company filed 2026-09-07, unless this venture is given an entity of its own before it monetizes (the open question in `hq:legal/entities.md`)
 **Last Updated:** 2026-08-15
 
 > The authoritative version of these rules lives in [`ai-instructions/global/04-compliance.md`](https://github.com/mpacarroll/ai-instructions/blob/main/global/04-compliance.md). This file is the project-specific layer on top of that. When in doubt, the global file wins.
