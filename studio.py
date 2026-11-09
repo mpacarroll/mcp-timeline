@@ -802,6 +802,8 @@ def purge_history(db, start_date, end_date):
     counts["story_days"] = db.execute(
         "DELETE FROM studio_story WHERE local_date BETWEEN ? AND ?",
         (start_date, end_date)).rowcount
+    import studio_finder
+    studio_finder.forget_dismissals_in(db, start_date, end_date)
     db.commit()
     return counts
 

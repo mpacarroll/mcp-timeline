@@ -21,20 +21,39 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
+sys.path.insert(0, HERE)
 
 import ingest  # noqa: E402
 import studio  # noqa: E402
 
 FIXTURE = os.path.join(ROOT, "tests", "fixtures", "synthetic_journey.json")
 NAMES = os.path.join(ROOT, "tests", "fixtures", "synthetic_journey_place_names.json")
+SEASON = os.path.join(ROOT, "tests", "fixtures", "synthetic_season.json")
+SEASON_NAMES = os.path.join(ROOT, "tests", "fixtures", "synthetic_season_place_names.json")
 
 
-def build(db_path, quiet=False):
+def add_raw_fixes(db_path):
+    """The season's OwnTracks-only day, written the way the OwnTracks
+    receiver writes fixes."""
+    import make_synthetic_season
+    db = studio.connect(db_path)
+    db.executemany("INSERT INTO path_points (source, ts_utc, lat, lng) VALUES (?,?,?,?)",
+                   [("owntracks", *f) for f in make_synthetic_season.raw_day_fixes()])
+    db.commit()
+    db.close()
+
+
+def build(db_path, quiet=False, season=False):
+    """season=True loads a whole synthetic May (the Lisbon trip plus a
+    month around an invented home, a cabin weekend, a beach day and an
+    OwnTracks-only day) so the trip finder has trips to find."""
     if os.path.exists(db_path):
         os.remove(db_path)
-    ingest.ingest(FIXTURE, db_path)
+    ingest.ingest(SEASON if season else FIXTURE, db_path)
+    if season:
+        add_raw_fixes(db_path)
     db = studio.connect(db_path)
-    with open(NAMES) as f:
+    with open(SEASON_NAMES if season else NAMES) as f:
         for place_id, label in json.load(f).items():
             studio.name_place(db, place_id, label)
     trip = studio.create_trip(db, "Lisbon long weekend", "2026-05-14", "2026-05-17",
@@ -94,4 +113,4 @@ def build(db_path, quiet=False):
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         sys.exit("usage: demo_studio.py <demo.db>")
-    build(sys.argv[1])
+    build(sys.argv[1], season=True)

@@ -219,6 +219,22 @@ CREATE TABLE IF NOT EXISTS studio_exports (
     stale_reason TEXT,              -- set when a later redaction or deletion outdates it
     removed_utc  TEXT
 );
+
+-- Trip finder (studio_finder.py). Home is set by the person or detected
+-- on demand; it is never exported and never offered to an agent.
+CREATE TABLE IF NOT EXISTS studio_settings (
+    key   TEXT PRIMARY KEY,         -- home_lat / home_lng / home_set_utc
+    value TEXT NOT NULL
+);
+
+-- A suggested trip the person said was not a trip. Keyed by its dates,
+-- so the same stretch is not suggested again after a re-ingest.
+CREATE TABLE IF NOT EXISTS studio_dismissed_trips (
+    start_date    TEXT NOT NULL,
+    end_date      TEXT NOT NULL,
+    dismissed_utc TEXT NOT NULL,
+    PRIMARY KEY (start_date, end_date)
+);
 """
 
 # Built separately from the tables above, because an index on `source`

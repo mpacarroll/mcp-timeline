@@ -1,0 +1,2484 @@
+[
+  {
+    "startTime": "2026-05-01T00:00:00.000-04:00",
+    "endTime": "2026-05-01T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-01T08:10:00.000-04:00",
+    "endTime": "2026-05-01T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-01T08:40:00.000-04:00",
+    "endTime": "2026-05-01T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-01T17:30:00.000-04:00",
+    "endTime": "2026-05-01T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-01T18:00:00.000-04:00",
+    "endTime": "2026-05-01T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-02T00:00:00.000-04:00",
+    "endTime": "2026-05-02T10:00:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-02T10:00:00.000-04:00",
+    "endTime": "2026-05-02T10:15:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.387200,-71.096500",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "700.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-02T10:15:00.000-04:00",
+    "endTime": "2026-05-02T10:50:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_GROCER_0014",
+        "placeLocation": "geo:42.387200,-71.096500"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-02T10:50:00.000-04:00",
+    "endTime": "2026-05-02T11:05:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.387200,-71.096500",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "700.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-02T11:05:00.000-04:00",
+    "endTime": "2026-05-02T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-03T00:00:00.000-04:00",
+    "endTime": "2026-05-03T10:00:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-03T10:00:00.000-04:00",
+    "endTime": "2026-05-03T10:15:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.387200,-71.096500",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "700.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-03T10:15:00.000-04:00",
+    "endTime": "2026-05-03T10:50:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_GROCER_0014",
+        "placeLocation": "geo:42.387200,-71.096500"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-03T10:50:00.000-04:00",
+    "endTime": "2026-05-03T11:05:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.387200,-71.096500",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "700.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-03T11:05:00.000-04:00",
+    "endTime": "2026-05-03T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-04T00:00:00.000-04:00",
+    "endTime": "2026-05-04T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-04T08:10:00.000-04:00",
+    "endTime": "2026-05-04T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-04T08:40:00.000-04:00",
+    "endTime": "2026-05-04T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-04T17:30:00.000-04:00",
+    "endTime": "2026-05-04T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-04T18:00:00.000-04:00",
+    "endTime": "2026-05-04T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-05T00:00:00.000-04:00",
+    "endTime": "2026-05-05T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-05T08:10:00.000-04:00",
+    "endTime": "2026-05-05T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-05T08:40:00.000-04:00",
+    "endTime": "2026-05-05T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-05T17:30:00.000-04:00",
+    "endTime": "2026-05-05T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-05T18:00:00.000-04:00",
+    "endTime": "2026-05-05T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-06T00:00:00.000-04:00",
+    "endTime": "2026-05-06T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-06T08:10:00.000-04:00",
+    "endTime": "2026-05-06T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-06T08:40:00.000-04:00",
+    "endTime": "2026-05-06T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-06T17:30:00.000-04:00",
+    "endTime": "2026-05-06T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-06T18:00:00.000-04:00",
+    "endTime": "2026-05-06T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-07T00:00:00.000-04:00",
+    "endTime": "2026-05-07T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-07T08:10:00.000-04:00",
+    "endTime": "2026-05-07T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-07T08:40:00.000-04:00",
+    "endTime": "2026-05-07T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-07T17:30:00.000-04:00",
+    "endTime": "2026-05-07T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-07T18:00:00.000-04:00",
+    "endTime": "2026-05-07T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-08T00:00:00.000-04:00",
+    "endTime": "2026-05-08T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-08T08:10:00.000-04:00",
+    "endTime": "2026-05-08T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-08T08:40:00.000-04:00",
+    "endTime": "2026-05-08T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-08T17:30:00.000-04:00",
+    "endTime": "2026-05-08T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-08T18:00:00.000-04:00",
+    "endTime": "2026-05-08T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-09T00:00:00.000-04:00",
+    "endTime": "2026-05-09T09:00:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-09T09:00:00.000-04:00",
+    "endTime": "2026-05-09T10:05:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.702100,-70.550200",
+      "topCandidate": {
+        "type": "in passenger vehicle",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "61000.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-09T10:05:00.000-04:00",
+    "endTime": "2026-05-09T13:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_BEACH_0015",
+        "placeLocation": "geo:42.702100,-70.550200"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-09T13:30:00.000-04:00",
+    "endTime": "2026-05-09T13:45:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.702100,-70.550200",
+      "end": "geo:42.697200,-70.544800",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "800.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-09T13:45:00.000-04:00",
+    "endTime": "2026-05-09T15:00:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_CHOWDER_0016",
+        "placeLocation": "geo:42.697200,-70.544800"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-09T15:00:00.000-04:00",
+    "endTime": "2026-05-09T16:10:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.697200,-70.544800",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in passenger vehicle",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "61500.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-09T16:10:00.000-04:00",
+    "endTime": "2026-05-09T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-10T00:00:00.000-04:00",
+    "endTime": "2026-05-10T10:00:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-10T10:00:00.000-04:00",
+    "endTime": "2026-05-10T10:15:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.387200,-71.096500",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "700.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-10T10:15:00.000-04:00",
+    "endTime": "2026-05-10T10:50:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_GROCER_0014",
+        "placeLocation": "geo:42.387200,-71.096500"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-10T10:50:00.000-04:00",
+    "endTime": "2026-05-10T11:05:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.387200,-71.096500",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "700.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-10T11:05:00.000-04:00",
+    "endTime": "2026-05-10T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-11T00:00:00.000-04:00",
+    "endTime": "2026-05-11T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-11T08:10:00.000-04:00",
+    "endTime": "2026-05-11T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-11T08:40:00.000-04:00",
+    "endTime": "2026-05-11T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-11T17:30:00.000-04:00",
+    "endTime": "2026-05-11T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-11T18:00:00.000-04:00",
+    "endTime": "2026-05-11T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-12T00:00:00.000-04:00",
+    "endTime": "2026-05-12T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-12T08:10:00.000-04:00",
+    "endTime": "2026-05-12T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-12T08:40:00.000-04:00",
+    "endTime": "2026-05-12T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-12T17:30:00.000-04:00",
+    "endTime": "2026-05-12T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-12T18:00:00.000-04:00",
+    "endTime": "2026-05-12T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-13T00:00:00.000-04:00",
+    "endTime": "2026-05-13T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-13T08:10:00.000-04:00",
+    "endTime": "2026-05-13T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-13T08:40:00.000-04:00",
+    "endTime": "2026-05-13T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-13T17:30:00.000-04:00",
+    "endTime": "2026-05-13T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-13T18:00:00.000-04:00",
+    "endTime": "2026-05-14T15:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-14T15:30:00.000-04:00",
+    "endTime": "2026-05-14T16:10:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.365600,-71.009600",
+      "topCandidate": {
+        "type": "in passenger vehicle",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "17800.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-14T16:10:00.000-04:00",
+    "endTime": "2026-05-14T18:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_BOS_0003",
+        "placeLocation": "geo:42.365600,-71.009600"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-14T18:30:00.000-04:00",
+    "endTime": "2026-05-15T06:15:00.000+01:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.365600,-71.009600",
+      "end": "geo:38.774200,-9.134200",
+      "topCandidate": {
+        "type": "flying",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "5180000.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-15T06:15:00.000+01:00",
+    "endTime": "2026-05-15T07:00:00.000+01:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_LIS_0004",
+        "placeLocation": "geo:38.774200,-9.134200"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-15T07:00:00.000+01:00",
+    "endTime": "2026-05-15T07:35:00.000+01:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:38.774200,-9.134200",
+      "end": "geo:38.714800,-9.140700",
+      "topCandidate": {
+        "type": "in passenger vehicle",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "7300.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-15T07:35:00.000+01:00",
+    "endTime": "2026-05-15T11:00:00.000+01:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Inferred Accommodation",
+        "placeID": "SYNTH_HOTEL_0005",
+        "placeLocation": "geo:38.714800,-9.140700"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-15T11:00:00.000+01:00",
+    "endTime": "2026-05-15T11:15:00.000+01:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:38.714800,-9.140700",
+      "end": "geo:38.722650,-9.147910",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "1050.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-15T11:00:00.000+01:00",
+    "endTime": "2026-05-15T11:15:00.000+01:00",
+    "timelinePath": [
+      {
+        "point": "geo:38.714800,-9.140700",
+        "durationMinutesOffsetFromStartTime": "0"
+      },
+      {
+        "point": "geo:38.716770,-9.142142",
+        "durationMinutesOffsetFromStartTime": "3"
+      },
+      {
+        "point": "geo:38.717540,-9.143584",
+        "durationMinutesOffsetFromStartTime": "6"
+      },
+      {
+        "point": "geo:38.719910,-9.145026",
+        "durationMinutesOffsetFromStartTime": "9"
+      },
+      {
+        "point": "geo:38.720680,-9.146468",
+        "durationMinutesOffsetFromStartTime": "12"
+      },
+      {
+        "point": "geo:38.722650,-9.147910",
+        "durationMinutesOffsetFromStartTime": "15"
+      }
+    ]
+  },
+  {
+    "startTime": "2026-05-15T11:15:00.000+01:00",
+    "endTime": "2026-05-15T12:05:00.000+01:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_CLINIC_0006",
+        "placeLocation": "geo:38.722650,-9.147910"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-15T12:05:00.000+01:00",
+    "endTime": "2026-05-15T12:40:00.000+01:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:38.722650,-9.147910",
+      "end": "geo:38.707000,-9.145900",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "1900.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-15T12:05:00.000+01:00",
+    "endTime": "2026-05-15T12:40:00.000+01:00",
+    "timelinePath": [
+      {
+        "point": "geo:38.722650,-9.147910",
+        "durationMinutesOffsetFromStartTime": "0"
+      },
+      {
+        "point": "geo:38.720814,-9.147623",
+        "durationMinutesOffsetFromStartTime": "5"
+      },
+      {
+        "point": "geo:38.717779,-9.147336",
+        "durationMinutesOffsetFromStartTime": "10"
+      },
+      {
+        "point": "geo:38.716343,-9.147049",
+        "durationMinutesOffsetFromStartTime": "15"
+      },
+      {
+        "point": "geo:38.713307,-9.146761",
+        "durationMinutesOffsetFromStartTime": "20"
+      },
+      {
+        "point": "geo:38.711871,-9.146474",
+        "durationMinutesOffsetFromStartTime": "25"
+      },
+      {
+        "point": "geo:38.708836,-9.146187",
+        "durationMinutesOffsetFromStartTime": "30"
+      },
+      {
+        "point": "geo:38.707000,-9.145900",
+        "durationMinutesOffsetFromStartTime": "35"
+      }
+    ]
+  },
+  {
+    "startTime": "2026-05-15T12:40:00.000+01:00",
+    "endTime": "2026-05-15T14:00:00.000+01:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_MARKET_0007",
+        "placeLocation": "geo:38.707000,-9.145900"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-15T14:00:00.000+01:00",
+    "endTime": "2026-05-15T14:30:00.000+01:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:38.707000,-9.145900",
+      "end": "geo:38.691600,-9.216000",
+      "topCandidate": {
+        "type": "in tram",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "6400.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-15T14:30:00.000+01:00",
+    "endTime": "2026-05-15T16:30:00.000+01:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_TOWER_0008",
+        "placeLocation": "geo:38.691600,-9.216000"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-15T16:30:00.000+01:00",
+    "endTime": "2026-05-15T16:40:00.000+01:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:38.691600,-9.216000",
+      "end": "geo:38.697900,-9.206400",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "950.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-15T16:40:00.000+01:00",
+    "endTime": "2026-05-15T17:50:00.000+01:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_MONASTERY_0009",
+        "placeLocation": "geo:38.697900,-9.206400"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-15T18:00:00.000+01:00",
+    "endTime": "2026-05-15T18:35:00.000+01:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:38.697900,-9.206400",
+      "end": "geo:38.714800,-9.140700",
+      "topCandidate": {
+        "type": "in tram",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "6900.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-15T18:45:00.000+01:00",
+    "endTime": "2026-05-16T09:00:00.000+01:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Inferred Accommodation",
+        "placeID": "SYNTH_HOTEL_0005",
+        "placeLocation": "geo:38.714800,-9.140700"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-16T09:00:00.000+01:00",
+    "endTime": "2026-05-16T09:40:00.000+01:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:38.714800,-9.140700",
+      "end": "geo:38.713900,-9.133400",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "2200.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-16T09:00:00.000+01:00",
+    "endTime": "2026-05-16T09:40:00.000+01:00",
+    "timelinePath": [
+      {
+        "point": "geo:38.714800,-9.140700",
+        "durationMinutesOffsetFromStartTime": "0"
+      },
+      {
+        "point": "geo:38.715087,-9.139788",
+        "durationMinutesOffsetFromStartTime": "5"
+      },
+      {
+        "point": "geo:38.714175,-9.138875",
+        "durationMinutesOffsetFromStartTime": "10"
+      },
+      {
+        "point": "geo:38.714862,-9.137963",
+        "durationMinutesOffsetFromStartTime": "15"
+      },
+      {
+        "point": "geo:38.713950,-9.137050",
+        "durationMinutesOffsetFromStartTime": "20"
+      },
+      {
+        "point": "geo:38.714638,-9.136138",
+        "durationMinutesOffsetFromStartTime": "25"
+      },
+      {
+        "point": "geo:38.713725,-9.135225",
+        "durationMinutesOffsetFromStartTime": "30"
+      },
+      {
+        "point": "geo:38.714413,-9.134313",
+        "durationMinutesOffsetFromStartTime": "35"
+      },
+      {
+        "point": "geo:38.713900,-9.133400",
+        "durationMinutesOffsetFromStartTime": "40"
+      }
+    ]
+  },
+  {
+    "startTime": "2026-05-16T09:40:00.000+01:00",
+    "endTime": "2026-05-16T11:30:00.000+01:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_CASTLE_0010",
+        "placeLocation": "geo:38.713900,-9.133400"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-16T11:30:00.000+01:00",
+    "endTime": "2026-05-16T11:50:00.000+01:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:38.713900,-9.133400",
+      "end": "geo:38.717100,-9.132900",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "600.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-16T11:50:00.000+01:00",
+    "endTime": "2026-05-16T12:30:00.000+01:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_VIEWPOINT_0011",
+        "placeLocation": "geo:38.717100,-9.132900"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-16T12:30:00.000+01:00",
+    "endTime": "2026-05-16T13:00:00.000+01:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:38.717100,-9.132900",
+      "end": "geo:38.711000,-9.137000",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "900.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-16T13:00:00.000+01:00",
+    "endTime": "2026-05-16T14:00:00.000+01:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_CAFE_0012",
+        "placeLocation": "geo:38.711000,-9.137000"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-16T14:00:00.000+01:00",
+    "endTime": "2026-05-16T14:25:00.000+01:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:38.711000,-9.137000",
+      "end": "geo:38.714800,-9.140700",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "1100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-16T14:25:00.000+01:00",
+    "endTime": "2026-05-16T18:30:00.000+01:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Inferred Accommodation",
+        "placeID": "SYNTH_HOTEL_0005",
+        "placeLocation": "geo:38.714800,-9.140700"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-16T18:30:00.000+01:00",
+    "endTime": "2026-05-16T18:55:00.000+01:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:38.714800,-9.140700",
+      "end": "geo:38.736130,-9.154270",
+      "topCandidate": {
+        "type": "in passenger vehicle",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "3600.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-16T18:30:00.000+01:00",
+    "endTime": "2026-05-16T18:55:00.000+01:00",
+    "timelinePath": [
+      {
+        "point": "geo:38.714800,-9.140700",
+        "durationMinutesOffsetFromStartTime": "0"
+      },
+      {
+        "point": "geo:38.718755,-9.142962",
+        "durationMinutesOffsetFromStartTime": "4"
+      },
+      {
+        "point": "geo:38.721510,-9.145223",
+        "durationMinutesOffsetFromStartTime": "8"
+      },
+      {
+        "point": "geo:38.725865,-9.147485",
+        "durationMinutesOffsetFromStartTime": "12"
+      },
+      {
+        "point": "geo:38.728620,-9.149747",
+        "durationMinutesOffsetFromStartTime": "17"
+      },
+      {
+        "point": "geo:38.732975,-9.152008",
+        "durationMinutesOffsetFromStartTime": "21"
+      },
+      {
+        "point": "geo:38.736130,-9.154270",
+        "durationMinutesOffsetFromStartTime": "25"
+      }
+    ]
+  },
+  {
+    "startTime": "2026-05-16T18:55:00.000+01:00",
+    "endTime": "2026-05-16T23:00:00.000+01:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_FRIEND_0013",
+        "placeLocation": "geo:38.736130,-9.154270"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-16T23:00:00.000+01:00",
+    "endTime": "2026-05-16T23:25:00.000+01:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:38.736130,-9.154270",
+      "end": "geo:38.714800,-9.140700",
+      "topCandidate": {
+        "type": "in passenger vehicle",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "3700.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-16T23:25:00.000+01:00",
+    "endTime": "2026-05-17T08:00:00.000+01:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Inferred Accommodation",
+        "placeID": "SYNTH_HOTEL_0005",
+        "placeLocation": "geo:38.714800,-9.140700"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-17T08:00:00.000+01:00",
+    "endTime": "2026-05-17T08:30:00.000+01:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:38.714800,-9.140700",
+      "end": "geo:38.774200,-9.134200",
+      "topCandidate": {
+        "type": "in passenger vehicle",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "7400.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-17T08:30:00.000+01:00",
+    "endTime": "2026-05-17T11:00:00.000+01:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_LIS_0004",
+        "placeLocation": "geo:38.774200,-9.134200"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-17T11:00:00.000+01:00",
+    "endTime": "2026-05-17T13:30:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:38.774200,-9.134200",
+      "end": "geo:42.365600,-71.009600",
+      "topCandidate": {
+        "type": "flying",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "5180000.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-17T13:30:00.000-04:00",
+    "endTime": "2026-05-17T14:15:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_BOS_0003",
+        "placeLocation": "geo:42.365600,-71.009600"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-17T14:15:00.000-04:00",
+    "endTime": "2026-05-17T14:55:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.365600,-71.009600",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in passenger vehicle",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "17900.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-17T14:55:00.000-04:00",
+    "endTime": "2026-05-17T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-18T00:00:00.000-04:00",
+    "endTime": "2026-05-18T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-18T08:10:00.000-04:00",
+    "endTime": "2026-05-18T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-18T08:40:00.000-04:00",
+    "endTime": "2026-05-18T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-18T17:30:00.000-04:00",
+    "endTime": "2026-05-18T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-18T18:00:00.000-04:00",
+    "endTime": "2026-05-18T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-19T00:00:00.000-04:00",
+    "endTime": "2026-05-19T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-19T08:10:00.000-04:00",
+    "endTime": "2026-05-19T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-19T08:40:00.000-04:00",
+    "endTime": "2026-05-19T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-19T17:30:00.000-04:00",
+    "endTime": "2026-05-19T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-19T18:00:00.000-04:00",
+    "endTime": "2026-05-19T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-20T00:00:00.000-04:00",
+    "endTime": "2026-05-20T17:50:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-20T18:00:00.000-04:00",
+    "endTime": "2026-05-20T18:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.472300,-71.430100",
+      "topCandidate": {
+        "type": "in passenger vehicle",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "31000.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-20T18:40:00.000-04:00",
+    "endTime": "2026-05-20T19:20:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_FARM_0017",
+        "placeLocation": "geo:42.472300,-71.430100"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-20T19:20:00.000-04:00",
+    "endTime": "2026-05-20T20:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.472300,-71.430100",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in passenger vehicle",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "31000.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-20T20:00:00.000-04:00",
+    "endTime": "2026-05-20T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-21T00:00:00.000-04:00",
+    "endTime": "2026-05-21T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-21T08:10:00.000-04:00",
+    "endTime": "2026-05-21T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-21T08:40:00.000-04:00",
+    "endTime": "2026-05-21T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-21T17:30:00.000-04:00",
+    "endTime": "2026-05-21T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-21T18:00:00.000-04:00",
+    "endTime": "2026-05-21T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-22T00:00:00.000-04:00",
+    "endTime": "2026-05-22T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-22T08:10:00.000-04:00",
+    "endTime": "2026-05-22T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-22T08:40:00.000-04:00",
+    "endTime": "2026-05-22T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-22T17:30:00.000-04:00",
+    "endTime": "2026-05-22T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-22T18:00:00.000-04:00",
+    "endTime": "2026-05-22T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-23T00:00:00.000-04:00",
+    "endTime": "2026-05-23T09:00:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-23T09:00:00.000-04:00",
+    "endTime": "2026-05-23T11:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:43.625100,-71.382400",
+      "topCandidate": {
+        "type": "in passenger vehicle",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "152000.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-23T11:00:00.000-04:00",
+    "endTime": "2026-05-23T13:00:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Inferred Accommodation",
+        "placeID": "SYNTH_CABIN_0018",
+        "placeLocation": "geo:43.625100,-71.382400"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-23T13:00:00.000-04:00",
+    "endTime": "2026-05-23T13:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:43.625100,-71.382400",
+      "end": "geo:43.660800,-71.335700",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4800.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-23T13:40:00.000-04:00",
+    "endTime": "2026-05-23T16:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_TRAIL_0019",
+        "placeLocation": "geo:43.660800,-71.335700"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-23T16:30:00.000-04:00",
+    "endTime": "2026-05-23T17:10:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:43.660800,-71.335700",
+      "end": "geo:43.625100,-71.382400",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4800.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-23T17:10:00.000-04:00",
+    "endTime": "2026-05-24T09:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Inferred Accommodation",
+        "placeID": "SYNTH_CABIN_0018",
+        "placeLocation": "geo:43.625100,-71.382400"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-24T09:30:00.000-04:00",
+    "endTime": "2026-05-24T09:45:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:43.625100,-71.382400",
+      "end": "geo:43.611900,-71.370200",
+      "topCandidate": {
+        "type": "in passenger vehicle",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "2100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-24T09:45:00.000-04:00",
+    "endTime": "2026-05-24T10:45:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_LAKEDINER_0020",
+        "placeLocation": "geo:43.611900,-71.370200"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-24T10:45:00.000-04:00",
+    "endTime": "2026-05-24T12:50:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:43.611900,-71.370200",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in passenger vehicle",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "153000.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-24T12:50:00.000-04:00",
+    "endTime": "2026-05-24T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-25T00:00:00.000-04:00",
+    "endTime": "2026-05-25T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-25T08:10:00.000-04:00",
+    "endTime": "2026-05-25T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-25T08:40:00.000-04:00",
+    "endTime": "2026-05-25T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-25T17:30:00.000-04:00",
+    "endTime": "2026-05-25T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-25T18:00:00.000-04:00",
+    "endTime": "2026-05-25T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-26T00:00:00.000-04:00",
+    "endTime": "2026-05-26T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-26T08:10:00.000-04:00",
+    "endTime": "2026-05-26T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-26T08:40:00.000-04:00",
+    "endTime": "2026-05-26T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-26T17:30:00.000-04:00",
+    "endTime": "2026-05-26T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-26T18:00:00.000-04:00",
+    "endTime": "2026-05-26T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-27T00:00:00.000-04:00",
+    "endTime": "2026-05-27T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-27T08:10:00.000-04:00",
+    "endTime": "2026-05-27T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-27T08:40:00.000-04:00",
+    "endTime": "2026-05-27T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-27T17:30:00.000-04:00",
+    "endTime": "2026-05-27T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-27T18:00:00.000-04:00",
+    "endTime": "2026-05-27T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-29T00:00:00.000-04:00",
+    "endTime": "2026-05-29T08:10:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-29T08:10:00.000-04:00",
+    "endTime": "2026-05-29T08:40:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.363450,-71.088110",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-29T08:40:00.000-04:00",
+    "endTime": "2026-05-29T17:30:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Work",
+        "placeID": "SYNTH_WORK_0002",
+        "placeLocation": "geo:42.363450,-71.088110"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-29T17:30:00.000-04:00",
+    "endTime": "2026-05-29T18:00:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.363450,-71.088110",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "in subway",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "4100.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-29T18:00:00.000-04:00",
+    "endTime": "2026-05-29T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-30T00:00:00.000-04:00",
+    "endTime": "2026-05-30T10:00:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-30T10:00:00.000-04:00",
+    "endTime": "2026-05-30T10:15:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.387200,-71.096500",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "700.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-30T10:15:00.000-04:00",
+    "endTime": "2026-05-30T10:50:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_GROCER_0014",
+        "placeLocation": "geo:42.387200,-71.096500"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-30T10:50:00.000-04:00",
+    "endTime": "2026-05-30T11:05:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.387200,-71.096500",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "700.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-30T11:05:00.000-04:00",
+    "endTime": "2026-05-30T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-31T00:00:00.000-04:00",
+    "endTime": "2026-05-31T10:00:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-31T10:00:00.000-04:00",
+    "endTime": "2026-05-31T10:15:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.390120,-71.102340",
+      "end": "geo:42.387200,-71.096500",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "700.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-31T10:15:00.000-04:00",
+    "endTime": "2026-05-31T10:50:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Unknown",
+        "placeID": "SYNTH_GROCER_0014",
+        "placeLocation": "geo:42.387200,-71.096500"
+      }
+    }
+  },
+  {
+    "startTime": "2026-05-31T10:50:00.000-04:00",
+    "endTime": "2026-05-31T11:05:00.000-04:00",
+    "activity": {
+      "probability": "0.850000",
+      "start": "geo:42.387200,-71.096500",
+      "end": "geo:42.390120,-71.102340",
+      "topCandidate": {
+        "type": "walking",
+        "probability": "0.800000"
+      },
+      "distanceMeters": "700.000000"
+    }
+  },
+  {
+    "startTime": "2026-05-31T11:05:00.000-04:00",
+    "endTime": "2026-05-31T23:59:00.000-04:00",
+    "visit": {
+      "hierarchyLevel": "0",
+      "probability": "0.900000",
+      "topCandidate": {
+        "probability": "0.880000",
+        "semanticType": "Home",
+        "placeID": "SYNTH_HOME_0001",
+        "placeLocation": "geo:42.390120,-71.102340"
+      }
+    }
+  }
+]
