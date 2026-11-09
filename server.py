@@ -7,8 +7,17 @@ Claude Code:
     claude mcp add timeline -e TIMELINE_DB=/path/to/timeline.db -- \
         /path/to/.venv/bin/python /path/to/server.py
 
-All tools are read-only. Tool docstrings are the API surface an LLM sees;
-edit them with the same care as user-facing copy.
+The four history tools are read-only. Tool docstrings are the API surface
+an LLM sees; edit them with the same care as user-facing copy.
+
+Two toolsets, chosen with TIMELINE_TOOLS:
+
+- all (default): the four history tools plus the studio tools.
+- studio: only the studio tools. Use this for any agent you would not hand
+  your whole location history. It can read exactly one trip, through the
+  disclosure view and redactions you chose, and only while the grant in
+  TIMELINE_GRANT is active. Create grants in the history studio
+  (studio_web.py) or with `studio.py grant`.
 """
 
 import math
@@ -19,21 +28,39 @@ from typing import Any
 
 import dwell
 import geocode
+import studio
+import studio_export
 from geo import haversine_m
 from mcp.server import MCPServer
 from mcp.server.transport_security import TransportSecuritySettings
 
 DB_PATH = os.environ.get("TIMELINE_DB", "timeline.db")
+TOOLSET = os.environ.get("TIMELINE_TOOLS", "all")
+if TOOLSET not in ("all", "studio"):
+    raise SystemExit("TIMELINE_TOOLS must be 'all' or 'studio'")
 
 MODES = ["walking", "in subway", "in passenger vehicle", "in bus", "in train",
          "in tram", "cycling", "flying", "running", "swimming", "hiking",
          "strength_training", "yoga", "elliptical", "rowing"]
 
-server = MCPServer(
-    name="timeline",
-    instructions="Personal location history: place visits and movement "
-                 "segments ingested from a Google Maps Timeline export. "
-                 "Dates are the user's local days (YYYY-MM-DD).")
+INSTRUCTIONS = {
+    "all": "Personal location history: place visits and movement "
+           "segments ingested from a Google Maps Timeline export. "
+           "Dates are the user's local days (YYYY-MM-DD). The studio_* "
+           "tools read one trip the user has explicitly shared with you.",
+    "studio": "One trip from the user's location history, shared with you "
+              "through a grant they control. You cannot see anything outside "
+              "it. Call studio_scope first to see what you may read.",
+}
+
+server = MCPServer(name="timeline", instructions=INSTRUCTIONS[TOOLSET])
+
+
+def history_tool(fn):
+    """Register a whole-history tool only when the toolset allows it."""
+    if TOOLSET == "all":
+        return server.tool()(fn)
+    return fn
 
 
 def _db():
@@ -130,7 +157,7 @@ def _derive_day_from_fixes(db, date):
     return entries, len(points)
 
 
-@server.tool()
+@history_tool
 def activity_stats(mode: str, start_date: str, end_date: str,
                    group_by: str = "month") -> dict[str, Any]:
     """Summarize movement for one transport mode or workout type over a
@@ -187,7 +214,7 @@ def activity_stats(mode: str, start_date: str, end_date: str,
     return result
 
 
-@server.tool()
+@history_tool
 def day_summary(date: str) -> dict[str, Any]:
     """Chronological story of one local day: place visits and movement.
 
@@ -261,7 +288,7 @@ def day_summary(date: str) -> dict[str, Any]:
     return result
 
 
-@server.tool()
+@history_tool
 def visits_near(lat: float, lng: float, radius_m: int = 100) -> list[dict]:
     """Places the user has actually visited within radius_m meters of a point.
 
@@ -288,7 +315,7 @@ def visits_near(lat: float, lng: float, radius_m: int = 100) -> list[dict]:
     return sorted(out, key=lambda p: p["distance_m"])
 
 
-@server.tool()
+@history_tool
 def place_history(place: str, limit: int = 20) -> dict[str, Any]:
     """Every recorded visit to one place, looked up by place_id or by name.
 
@@ -326,6 +353,146 @@ def place_history(place: str, limit: int = 20) -> dict[str, Any]:
             "visit_count": p["visit_count"],
             "first_visit": p["first_seen"][:10], "last_visit": p["last_seen"][:10],
             "recent_visits": visits}
+
+
+# ---------------------------------------------------------------- studio tools
+#
+# Consent model: the grant token lives in this process's environment, put
+# there by the person when they configured the MCP client. The agent never
+# sees or passes it, so it cannot be talked into using a different one, and
+# a transcript of the conversation does not leak it. Every call, allowed or
+# refused, lands in the access log the person reads in the studio.
+
+def _grant(tool, need="read"):
+    token = os.environ.get("TIMELINE_GRANT")
+    if not token:
+        return None, None, {
+            "allowed": False,
+            "reason": "no grant configured. The person must create one in the "
+                      "history studio and set TIMELINE_GRANT for this server."}
+    db = studio.connect(_db_path_checked())
+    try:
+        return db, studio.resolve_grant(db, token, tool, need), None
+    except studio.StudioError as e:
+        db.close()
+        return None, None, {"allowed": False, "reason": str(e)}
+
+
+def _db_path_checked():
+    if not os.path.exists(DB_PATH):
+        raise RuntimeError(
+            f"No database at {DB_PATH}. Run ingest.py first or set TIMELINE_DB.")
+    return DB_PATH
+
+
+@server.tool()
+def studio_scope() -> dict[str, Any]:
+    """What the person has shared with you, and on what terms.
+
+    Call this first. Returns the trip's title and dates, what you are
+    allowed to do (read; suggest means you may propose captions or story
+    text that the person approves or rejects), the disclosure view applied
+    to everything you read, and when access ends. Anything not covered here
+    is not available to you: do not ask for other dates or places through
+    these tools, and say so plainly if the user's question needs them.
+    """
+    db, grant, refusal = _grant("studio_scope")
+    if refusal:
+        return refusal
+    try:
+        # Through build_view like every other way out, so a redacted name
+        # in the trip title is scrubbed here too.
+        trip = studio_export.build_view(db, grant["trip_id"], grant["profile"])["trip"]
+        return {"allowed": True, "trip": {"title": trip["title"],
+                                          "start_date": trip["start_date"],
+                                          "end_date": trip["end_date"]},
+                "capabilities": grant["capabilities"],
+                "view": grant["profile"], "expires_utc": grant["expires_utc"]}
+    finally:
+        db.close()
+
+
+@server.tool()
+def studio_trip() -> dict[str, Any]:
+    """The shared trip, day by day, exactly as the person chose to share it.
+
+    Items marked redacted are places the person chose to keep private:
+    describe them only by the label given, never guess what or where they
+    were. Times and coordinates may be coarsened (part_of_day, rounded
+    coordinates) on purpose; do not present them as more precise than
+    given. Each day's story_source says whether its text was written by
+    the person or auto-drafted.
+    """
+    db, grant, refusal = _grant("studio_trip")
+    if refusal:
+        return refusal
+    try:
+        return {"allowed": True,
+                **studio_export.build_view(db, grant["trip_id"], grant["profile"])}
+    finally:
+        db.close()
+
+
+@server.tool()
+def studio_day(date: str) -> dict[str, Any]:
+    """One day of the shared trip. date is YYYY-MM-DD and must fall inside
+    the trip and inside the days the person chose to share; any other date
+    returns allowed false rather than data."""
+    db, grant, refusal = _grant("studio_day")
+    if refusal:
+        return refusal
+    try:
+        view = studio_export.build_view(db, grant["trip_id"], grant["profile"])
+        for day in view["days"]:
+            if day["date"] == date:
+                return {"allowed": True, "trip": view["trip"], "day": day,
+                        "disclosure": view["disclosure"]}
+        return {"allowed": False,
+                "reason": "that date is not part of what was shared with you"}
+    finally:
+        db.close()
+
+
+@server.tool()
+def studio_propose(field: str, value: str, ref: str | None = None,
+                   date: str | None = None) -> dict[str, Any]:
+    """Propose a caption for one item or story text for one day.
+
+    Nothing changes until the person accepts it in the studio. field is
+    caption (pass the item's ref from studio_trip) or story (pass date as
+    YYYY-MM-DD). Requires a grant with the suggest capability. Write only
+    from what studio_trip showed you; never fill in a redacted item.
+    """
+    db, grant, refusal = _grant("studio_propose", need="suggest")
+    if refusal:
+        return refusal
+    try:
+        # An agent may only write about what its view shows it: an item it
+        # can see with captions on, or a day it can see with stories on.
+        view = studio_export.build_view(db, grant["trip_id"], grant["profile"])
+        if field == "caption":
+            visible = {e["ref"] for d in view["days"] for e in d["items"]
+                       if not e.get("redacted")}
+            if not grant["profile"].get("captions"):
+                return {"allowed": False,
+                        "reason": "captions are not part of what was shared with you"}
+            if ref not in visible:
+                return {"allowed": False,
+                        "reason": "that item is not one you can see in this trip"}
+        elif field == "story":
+            if not grant["profile"].get("story"):
+                return {"allowed": False,
+                        "reason": "stories are not part of what was shared with you"}
+            if date not in {d["date"] for d in view["days"]}:
+                return {"allowed": False,
+                        "reason": "that date is not part of what was shared with you"}
+        pid = studio.propose(db, grant, field, value, item_id=ref, local_date=date)
+        return {"allowed": True, "proposal_id": pid, "status": "pending",
+                "note": "the person will accept or reject this in the studio"}
+    except studio.StudioError as e:
+        return {"allowed": False, "reason": str(e)}
+    finally:
+        db.close()
 
 
 if __name__ == "__main__":

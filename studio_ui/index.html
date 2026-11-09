@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="studio-token" content="__STUDIO_TOKEN__">
+<title>History Studio</title>
+<link rel="stylesheet" href="/app.css">
+<script src="/app.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <span class="mark" aria-hidden="true"></span>
+    <div>
+      <h1>History Studio</h1>
+      <p class="sub">Your location history, edited and shared on your terms. Nothing leaves this machine unless you export it.</p>
+    </div>
+  </div>
+</header>
+<div class="layout">
+  <aside class="side" aria-label="Trips">
+    <h2>Trips</h2>
+    <ul id="trip-list" class="trip-list"></ul>
+    <details class="new-trip" id="new-trip">
+      <summary>New trip from history</summary>
+      <form id="create-form">
+        <label>Title <input name="title" required maxlength="120" placeholder="Lisbon long weekend"></label>
+        <label>First day <input name="start_date" type="date" required></label>
+        <label>Last day <input name="end_date" type="date" required></label>
+        <p class="hint" id="history-range"></p>
+        <button type="submit">Capture trip</button>
+      </form>
+    </details>
+  </aside>
+  <main id="main" class="main">
+    <section class="empty" id="empty">
+      <h2>Pick a trip, or capture a new one</h2>
+      <p>A trip copies the visits, journeys and routes from your history for the days you choose. Edits stay in the trip; your history is never rewritten.</p>
+    </section>
+    <section id="trip" hidden>
+      <div class="trip-head">
+        <div>
+          <h2 id="trip-title"></h2>
+          <p class="sub" id="trip-dates"></p>
+        </div>
+        <div class="row">
+          <button class="ghost" id="rename-trip">Rename</button>
+          <button class="ghost" id="recapture">Pull new history</button>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist">
+        <button role="tab" data-tab="timeline" aria-selected="true">Timeline</button>
+        <button role="tab" data-tab="story">Story</button>
+        <button role="tab" data-tab="privacy">Privacy</button>
+        <button role="tab" data-tab="share">Share and export</button>
+        <button role="tab" data-tab="agents">Agent access <span id="proposal-badge" class="badge" hidden></span></button>
+        <button role="tab" data-tab="danger">Delete</button>
+      </nav>
+      <div class="panel" data-panel="timeline"></div>
+      <div class="panel" data-panel="story" hidden></div>
+      <div class="panel" data-panel="privacy" hidden></div>
+      <div class="panel" data-panel="share" hidden></div>
+      <div class="panel" data-panel="agents" hidden></div>
+      <div class="panel" data-panel="danger" hidden></div>
+    </section>
+  </main>
+</div>
+<dialog id="inspector" aria-labelledby="inspector-title">
+  <div class="dialog-head">
+    <h2 id="inspector-title">Where this came from</h2>
+    <button class="ghost" id="inspector-close" aria-label="Close">Close</button>
+  </div>
+  <div id="inspector-body"></div>
+</dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

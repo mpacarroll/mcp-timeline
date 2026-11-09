@@ -78,6 +78,149 @@ CREATE TABLE IF NOT EXISTS geocode_cache (
 );
 """
 
+# The history studio's own tables (see studio.py). Everything here is
+# authored by the person, or derived from source rows at capture time, and
+# lives beside the source tables rather than inside them: an importer
+# rebuild (ingest.py drops and recreates places/visits) must never erase a
+# trip someone spent an evening editing, and a studio edit must never
+# rewrite what a source actually recorded.
+STUDIO_SCHEMA = """
+CREATE TABLE IF NOT EXISTS studio_trips (
+    trip_id      TEXT PRIMARY KEY,
+    title        TEXT NOT NULL,
+    start_date   TEXT NOT NULL,     -- inclusive local dates
+    end_date     TEXT NOT NULL,
+    summary      TEXT,
+    created_utc  TEXT NOT NULL,
+    updated_utc  TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS studio_items (
+    item_id      TEXT PRIMARY KEY,  -- stable hash of trip + source identity
+    trip_id      TEXT NOT NULL REFERENCES studio_trips(trip_id) ON DELETE CASCADE,
+    kind         TEXT NOT NULL,     -- visit / movement / note
+    local_date   TEXT NOT NULL,
+    start_utc    TEXT,
+    end_utc      TEXT,
+    start_local  TEXT,              -- full local ISO datetime when known
+    end_local    TEXT,
+    place_id     TEXT,
+    source_label TEXT,              -- label as captured, before any edit
+    label_source TEXT,              -- how source_label was obtained
+    label        TEXT,              -- your override, NULL if unedited
+    caption      TEXT,
+    mode         TEXT,
+    km           REAL,
+    lat REAL, lng REAL, end_lat REAL, end_lng REAL,
+    source       TEXT NOT NULL,     -- google_timeline / healthkit / raw fixes / you
+    source_table TEXT,
+    hidden       INTEGER NOT NULL DEFAULT 0,
+    created_utc  TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_studio_items_trip ON studio_items(trip_id, start_utc);
+
+CREATE TABLE IF NOT EXISTS studio_item_points (
+    item_id TEXT NOT NULL REFERENCES studio_items(item_id) ON DELETE CASCADE,
+    seq     INTEGER NOT NULL,
+    ts_utc  TEXT NOT NULL,
+    lat     REAL NOT NULL,
+    lng     REAL NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_studio_points_item ON studio_item_points(item_id);
+
+CREATE TABLE IF NOT EXISTS studio_edits (
+    id       INTEGER PRIMARY KEY,
+    trip_id  TEXT NOT NULL,
+    item_id  TEXT,
+    field    TEXT NOT NULL,
+    old      TEXT,
+    new      TEXT,
+    at_utc   TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS studio_place_labels (
+    place_id TEXT PRIMARY KEY,
+    label    TEXT NOT NULL,
+    at_utc   TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS studio_story (
+    trip_id     TEXT NOT NULL REFERENCES studio_trips(trip_id) ON DELETE CASCADE,
+    local_date  TEXT NOT NULL,
+    body        TEXT NOT NULL,
+    updated_utc TEXT NOT NULL,
+    PRIMARY KEY (trip_id, local_date)
+);
+
+CREATE TABLE IF NOT EXISTS studio_redactions (
+    redaction_id TEXT PRIMARY KEY,
+    trip_id      TEXT,              -- NULL applies to every trip
+    kind         TEXT NOT NULL,     -- place / item / area / date
+    target       TEXT,              -- place_id, item_id or date
+    lat REAL, lng REAL, radius_m REAL,
+    action       TEXT NOT NULL,     -- mask / remove
+    replacement  TEXT NOT NULL,
+    note         TEXT,              -- why, for you only; never exported
+    created_utc  TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS studio_shares (
+    share_id     TEXT PRIMARY KEY,
+    trip_id      TEXT NOT NULL REFERENCES studio_trips(trip_id) ON DELETE CASCADE,
+    audience     TEXT NOT NULL,
+    profile      TEXT NOT NULL,     -- JSON disclosure profile
+    created_utc  TEXT NOT NULL,
+    revoked_utc  TEXT
+);
+
+CREATE TABLE IF NOT EXISTS studio_grants (
+    grant_id     TEXT PRIMARY KEY,  -- public id, safe to show
+    token_sha256 TEXT NOT NULL UNIQUE,
+    trip_id      TEXT NOT NULL REFERENCES studio_trips(trip_id) ON DELETE CASCADE,
+    agent        TEXT NOT NULL,
+    capabilities TEXT NOT NULL,     -- JSON list: read, suggest
+    profile      TEXT NOT NULL,     -- JSON disclosure profile
+    expires_utc  TEXT NOT NULL,
+    created_utc  TEXT NOT NULL,
+    revoked_utc  TEXT
+);
+
+CREATE TABLE IF NOT EXISTS studio_access_log (
+    id        INTEGER PRIMARY KEY,
+    grant_id  TEXT,
+    trip_id   TEXT,
+    tool      TEXT NOT NULL,
+    outcome   TEXT NOT NULL,
+    at_utc    TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS studio_proposals (
+    proposal_id TEXT PRIMARY KEY,
+    grant_id    TEXT NOT NULL,
+    trip_id     TEXT NOT NULL REFERENCES studio_trips(trip_id) ON DELETE CASCADE,
+    item_id     TEXT,
+    field       TEXT NOT NULL,      -- caption / story
+    local_date  TEXT,
+    value       TEXT NOT NULL,
+    status      TEXT NOT NULL,      -- pending / accepted / rejected / withdrawn
+    created_utc TEXT NOT NULL,
+    decided_utc TEXT
+);
+
+CREATE TABLE IF NOT EXISTS studio_exports (
+    export_id    TEXT PRIMARY KEY,
+    trip_id      TEXT NOT NULL,
+    format       TEXT NOT NULL,
+    profile_name TEXT NOT NULL,
+    destination  TEXT NOT NULL,     -- file / download / share
+    path         TEXT,              -- set only for files the studio wrote
+    sha256       TEXT NOT NULL,
+    created_utc  TEXT NOT NULL,
+    stale_reason TEXT,              -- set when a later redaction or deletion outdates it
+    removed_utc  TEXT
+);
+"""
+
 # Built separately from the tables above, because an index on `source`
 # cannot be created until a database predating that column has been
 # migrated to have one.
@@ -141,6 +284,7 @@ def ensure_schema(db):
     db.executescript(PLACES_VISITS_SCHEMA)
     db.executescript(SHARED_TABLES)
     db.executescript(GEOCODE_SCHEMA)
+    db.executescript(STUDIO_SCHEMA)
     migrated = _migrate_add_source(db)
     db.executescript(SHARED_INDEXES)
     db.commit()
