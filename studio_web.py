@@ -176,13 +176,14 @@ def editor_view(db, trip_id):
     trip = dict(studio.get_trip_row(db, trip_id))
     items = studio.items_for_trip(db, trip_id)
     redactions = studio_export.load_redactions(db, trip_id)
+    place_pts = studio_export.place_points(db, redactions)
     stories = {r["local_date"]: r["body"] for r in db.execute(
         "SELECT local_date, body FROM studio_story WHERE trip_id = ?", (trip_id,))}
     owner = studio_export.build_view(db, trip_id, "owner")
     auto = {d["date"]: d.get("story") for d in owner["days"]}
     days = {}
     for it in items:
-        matches = studio_export.matching_redactions(redactions, it)
+        matches = studio_export.matching_redactions(redactions, it, place_pts)
         it["redaction"] = (None if not matches else
                            {"action": studio_export._strongest(matches)["action"],
                             "replacement": studio_export._strongest(matches)["replacement"]})

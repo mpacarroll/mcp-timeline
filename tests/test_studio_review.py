@@ -133,6 +133,13 @@ class PlaceRedactionCoversRawFixStops(Base):
         labels = [e["label"] for d in view["days"] for e in d["items"]]
         self.assertIn("Appointment", labels)
 
+    def test_editor_flags_the_raw_stop_as_redacted(self):
+        import studio_web
+        studio.add_redaction(self.db, "place", "mask", target="SYNTH_CLINIC_0006")
+        stops = [i for d in studio_web.editor_view(self.db, self.errand)["days"]
+                 for i in d["items"] if i["kind"] == "visit" and near_clinic(i["lat"], i["lng"])]
+        self.assertEqual(stops[0]["redaction"]["action"], "mask")
+
     def test_unrelated_raw_stop_is_untouched(self):
         studio.add_redaction(self.db, "place", "remove", target="SYNTH_CLINIC_0006")
         view = studio_export.build_view(self.db, self.errand, "owner")
