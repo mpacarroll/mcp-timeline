@@ -665,14 +665,26 @@ def _trim_routes_near(db, trip_id, lat, lng, radius_m=200):
     starts or ends there."""
     for m in db.execute("SELECT * FROM studio_items WHERE trip_id = ? AND kind = 'movement'",
                         (trip_id,)).fetchall():
+        pts = db.execute("SELECT seq, lat, lng FROM studio_item_points WHERE item_id = ?"
+                         " ORDER BY seq", (m["item_id"],)).fetchall()
         touched = False
         for a, b in (("lat", "lng"), ("end_lat", "end_lng")):
             if m[a] is not None and haversine_m(lat, lng, m[a], m[b]) <= radius_m:
                 db.execute(f"UPDATE studio_items SET {a} = NULL, {b} = NULL"
                            " WHERE item_id = ?", (m["item_id"],))
                 touched = True
+        # A movement rebuilt from raw fixes has no stored endpoints; its
+        # first and last route points are where it starts and ends.
+        if pts and m["lat"] is None and m["end_lat"] is None:
+            touched = touched or any(haversine_m(lat, lng, p["lat"], p["lng"]) <= radius_m
+                                     for p in (pts[0], pts[-1]))
         if touched:
             db.execute("DELETE FROM studio_item_points WHERE item_id = ?", (m["item_id"],))
+        else:
+            for p in pts:
+                if haversine_m(lat, lng, p["lat"], p["lng"]) <= radius_m:
+                    db.execute("DELETE FROM studio_item_points WHERE item_id = ?"
+                               " AND seq = ?", (m["item_id"], p["seq"]))
 
 
 def delete_trip(db, trip_id):
@@ -983,8 +995,14 @@ def list_grants(db, trip_id=None):
 
 
 def revoke_grant(db, grant_id):
+    """End a grant. Its pending proposals are withdrawn with it: revoking
+    an agent should not leave its words one click from your story."""
+    ts = now_utc()
     n = db.execute("UPDATE studio_grants SET revoked_utc = ? WHERE grant_id = ?"
-                   " AND revoked_utc IS NULL", (now_utc(), grant_id)).rowcount
+                   " AND revoked_utc IS NULL", (ts, grant_id)).rowcount
+    if n:
+        db.execute("UPDATE studio_proposals SET status = 'withdrawn', decided_utc = ?"
+                   " WHERE grant_id = ? AND status = 'pending'", (ts, grant_id))
     db.commit()
     if not n:
         raise StudioError("no active grant with that id")
@@ -1069,6 +1087,12 @@ def decide_proposal(db, proposal_id, accept):
                    (proposal_id,)).fetchone()
     if p is None or p["status"] != "pending":
         raise StudioError("no pending proposal with that id")
+    if accept:
+        g = db.execute("SELECT revoked_utc, expires_utc FROM studio_grants"
+                       " WHERE grant_id = ?", (p["grant_id"],)).fetchone()
+        if g is None or g["revoked_utc"] or g["expires_utc"] <= now_utc():
+            raise StudioError("the grant behind this proposal has ended; reject it"
+                              " or write the text yourself")
     if accept:
         if p["field"] == "caption":
             edit_item(db, p["item_id"], caption=p["value"])

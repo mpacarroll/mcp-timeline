@@ -400,7 +400,9 @@ def studio_scope() -> dict[str, Any]:
     if refusal:
         return refusal
     try:
-        trip = studio.get_trip_row(db, grant["trip_id"])
+        # Through build_view like every other way out, so a redacted name
+        # in the trip title is scrubbed here too.
+        trip = studio_export.build_view(db, grant["trip_id"], grant["profile"])["trip"]
         return {"allowed": True, "trip": {"title": trip["title"],
                                           "start_date": trip["start_date"],
                                           "end_date": trip["end_date"]},
@@ -465,13 +467,25 @@ def studio_propose(field: str, value: str, ref: str | None = None,
     if refusal:
         return refusal
     try:
+        # An agent may only write about what its view shows it: an item it
+        # can see with captions on, or a day it can see with stories on.
+        view = studio_export.build_view(db, grant["trip_id"], grant["profile"])
         if field == "caption":
-            visible = {e["ref"] for d in studio_export.build_view(
-                db, grant["trip_id"], grant["profile"])["days"] for e in d["items"]
-                if not e.get("redacted")}
+            visible = {e["ref"] for d in view["days"] for e in d["items"]
+                       if not e.get("redacted")}
+            if not grant["profile"].get("captions"):
+                return {"allowed": False,
+                        "reason": "captions are not part of what was shared with you"}
             if ref not in visible:
                 return {"allowed": False,
                         "reason": "that item is not one you can see in this trip"}
+        elif field == "story":
+            if not grant["profile"].get("story"):
+                return {"allowed": False,
+                        "reason": "stories are not part of what was shared with you"}
+            if date not in {d["date"] for d in view["days"]}:
+                return {"allowed": False,
+                        "reason": "that date is not part of what was shared with you"}
         pid = studio.propose(db, grant, field, value, item_id=ref, local_date=date)
         return {"allowed": True, "proposal_id": pid, "status": "pending",
                 "note": "the person will accept or reject this in the studio"}

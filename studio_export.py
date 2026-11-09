@@ -36,6 +36,10 @@ from geo import haversine_m
 
 COORD_DECIMALS = {"exact": 5, "neighborhood": 2, "city": 1}
 ENDPOINT_MATCH_M = 200
+# A stop with no place record (rebuilt from raw fixes) this close to a
+# redacted place is that place: "redact the clinic" must cover the day
+# OwnTracks saw you there as well as the day Timeline named it.
+PLACE_MATCH_M = 150
 
 
 # ---------------------------------------------------------------- redactions
@@ -51,9 +55,28 @@ def _inside(r, lat, lng):
             and haversine_m(lat, lng, r["lat"], r["lng"]) <= r["radius_m"])
 
 
-def matching_redactions(redactions, item):
+def place_points(db, redactions):
+    """{place_id: (lat, lng)} for every place redaction whose location is
+    known, from the places table or, after a purge removed that row, from
+    any captured item that still carries it."""
+    out = {}
+    for r in redactions:
+        if r["kind"] != "place" or r["target"] in out:
+            continue
+        row = db.execute("SELECT lat, lng FROM places WHERE place_id = ?",
+                         (r["target"],)).fetchone()
+        if row is None or row["lat"] is None:
+            row = db.execute("SELECT lat, lng FROM studio_items WHERE place_id = ?"
+                             " AND lat IS NOT NULL LIMIT 1", (r["target"],)).fetchone()
+        if row is not None and row["lat"] is not None:
+            out[r["target"]] = (row["lat"], row["lng"])
+    return out
+
+
+def matching_redactions(redactions, item, place_pts=None):
     """Redactions that apply to an item as a whole (not just its route)."""
     out = []
+    place_pts = place_pts or {}
     for r in redactions:
         k = r["kind"]
         if k == "item" and r["target"] == item["item_id"]:
@@ -61,6 +84,11 @@ def matching_redactions(redactions, item):
         elif k == "date" and r["target"] == item["local_date"]:
             out.append(r)
         elif k == "place" and item.get("place_id") and r["target"] == item["place_id"]:
+            out.append(r)
+        elif (k == "place" and item["kind"] == "visit" and not item.get("place_id")
+              and r["target"] in place_pts and item["lat"] is not None
+              and haversine_m(item["lat"], item["lng"], *place_pts[r["target"]])
+              <= PLACE_MATCH_M):
             out.append(r)
         elif k == "area" and item["kind"] == "visit" and _inside(r, item["lat"], item["lng"]):
             out.append(r)
@@ -118,6 +146,19 @@ def _part_of_day(local_iso):
     return "night"
 
 
+def route_ends(it):
+    """A movement's two ends: its recorded endpoints, or, for a movement
+    rebuilt from raw fixes (which has none), the first and last route
+    point. Without the fallback a raw route into a redacted stop would
+    survive simply because nobody stored where it ended."""
+    pts = it.get("points") or []
+    start = ((it["lat"], it["lng"]) if it["lat"] is not None
+             else (pts[0]["lat"], pts[0]["lng"]) if pts else None)
+    end = ((it["end_lat"], it["end_lng"]) if it["end_lat"] is not None
+           else (pts[-1]["lat"], pts[-1]["lng"]) if pts else None)
+    return start, end
+
+
 def _round(v, level):
     if v is None or level == "none":
         return None
@@ -140,6 +181,7 @@ def build_view(db, trip_id, profile="owner"):
     items = studio.items_for_trip(db, trip_id)
     redactions = load_redactions(db, trip_id)
     areas = [r for r in redactions if r["kind"] == "area"]
+    place_pts = place_points(db, redactions)
 
     secret_pairs = []
     for r in redactions:
@@ -148,11 +190,14 @@ def build_view(db, trip_id, profile="owner"):
             secret_pairs += [(t, said) for t in _place_terms(db, r["target"])]
 
     kept, redacted_count = [], 0
-    redacted_stops = []  # (lat, lng) of stops whose location must not leak
+    # (lat, lng) of stops whose location must not leak. Redacted places
+    # count even when this trip never visits them: a trip that starts with
+    # the drive home from the clinic still ends a route at the clinic.
+    redacted_stops = list(place_pts.values())
     for it in items:
         if it["hidden"]:
             continue
-        matches = matching_redactions(redactions, it)
+        matches = matching_redactions(redactions, it, place_pts)
         if matches:
             r = _strongest(matches)
             redacted_count += 1
@@ -180,21 +225,21 @@ def build_view(db, trip_id, profile="owner"):
     for it in kept:
         if it["kind"] != "movement" or it.get("masked"):
             continue
+        def hidden_at(lat, lng):
+            return (any(haversine_m(lat, lng, s[0], s[1]) <= ENDPOINT_MATCH_M
+                        for s in redacted_stops)
+                    or any(_inside(a, lat, lng) for a in areas))
+
         touched = False
-        for end in (("lat", "lng"), ("end_lat", "end_lng")):
-            lat, lng = it[end[0]], it[end[1]]
-            if lat is None:
-                continue
-            near_stop = any(haversine_m(lat, lng, s[0], s[1]) <= ENDPOINT_MATCH_M
-                            for s in redacted_stops)
-            if near_stop or any(_inside(a, lat, lng) for a in areas):
-                it[end[0]] = it[end[1]] = None
+        for end, cols in zip(route_ends(it), (("lat", "lng"), ("end_lat", "end_lng"))):
+            if end is not None and hidden_at(*end):
+                it[cols[0]] = it[cols[1]] = None
                 touched = True
         if touched:
             it["points"] = []
         else:
             it["points"] = [pt for pt in it["points"]
-                            if not any(_inside(a, pt["lat"], pt["lng"]) for a in areas)]
+                            if not hidden_at(pt["lat"], pt["lng"])]
 
     scrub = _scrubber(secret_pairs)
     for it in kept:
@@ -202,8 +247,17 @@ def build_view(db, trip_id, profile="owner"):
         it["source_label"] = scrub(it["source_label"])
         it["caption"] = scrub(it["caption"])
 
+    # A redacted day takes the story you wrote for it along: the story is
+    # the most revealing thing about that day. A masked day falls back to
+    # the auto-draft of its masked entries; a removed day disappears.
+    date_redactions = {}
+    for r in redactions:
+        if r["kind"] == "date":
+            prev = date_redactions.get(r["target"])
+            date_redactions[r["target"]] = _strongest([x for x in (prev, r) if x])
     stories = {r["local_date"]: scrub(r["body"]) for r in db.execute(
-        "SELECT local_date, body FROM studio_story WHERE trip_id = ?", (trip_id,))}
+        "SELECT local_date, body FROM studio_story WHERE trip_id = ?", (trip_id,))
+        if r["local_date"] not in date_redactions}
 
     # Disclosure.
     allowed_days = set(p["days"]) if p["days"] is not None else None
@@ -221,6 +275,8 @@ def build_view(db, trip_id, profile="owner"):
     out_days = []
     for date in all_dates:
         if not trip["start_date"] <= date <= trip["end_date"]:
+            continue
+        if date_redactions.get(date, {"action": None})["action"] == "remove":
             continue
         entries = days.get(date, [])
         day = {"date": date, "items": entries}

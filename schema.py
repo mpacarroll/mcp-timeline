@@ -202,7 +202,7 @@ CREATE TABLE IF NOT EXISTS studio_proposals (
     field       TEXT NOT NULL,      -- caption / story
     local_date  TEXT,
     value       TEXT NOT NULL,
-    status      TEXT NOT NULL,      -- pending / accepted / rejected
+    status      TEXT NOT NULL,      -- pending / accepted / rejected / withdrawn
     created_utc TEXT NOT NULL,
     decided_utc TEXT
 );

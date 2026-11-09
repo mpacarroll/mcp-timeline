@@ -67,7 +67,12 @@ def make_handler(db_path, session_token, port):
             self.wfile.write(body)
 
         def _body(self):
-            n = int(self.headers.get("Content-Length") or 0)
+            try:
+                n = int(self.headers.get("Content-Length") or 0)
+            except ValueError:
+                raise studio.StudioError("Content-Length is not a number")
+            if n < 0:
+                raise studio.StudioError("Content-Length cannot be negative")
             if n > 1_000_000:
                 raise studio.StudioError("request too large")
             if not n:
