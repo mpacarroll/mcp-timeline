@@ -36,6 +36,14 @@ sequenced behind that test now, not ahead of it.
   tunneled and access-controlled) is tracked separately; see the open
   PR adding it to `server.py`.
 
+## v1.2 (built, in review): history studio
+
+- `studio.py`, `studio_web.py`: capture a date range as an editable trip,
+  write its story, inspect sources, redact, share selectively, delete and
+  purge, all local. Agent access is per-trip grants (`TIMELINE_TOOLS=studio`,
+  `TIMELINE_GRANT`) instead of whole-history tools. Synthetic demo in
+  `tools/demo_studio.py`.
+
 ## v2: native collector app, Apple devices first
 
 - Manual export-then-ingest (v1, v1.1) still requires opening an app and

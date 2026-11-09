@@ -95,7 +95,8 @@ class HttpTransportTests(unittest.TestCase):
         names = asyncio.run(run())
         self.assertEqual(sorted(names),
                           ["activity_stats", "day_summary", "place_history",
-                           "visits_near"])
+                           "studio_day", "studio_propose", "studio_scope",
+                           "studio_trip", "visits_near"])
 
     def test_real_call_over_http_returns_structured_data(self):
         result = self.call("visits_near", {"lat": 1.0, "lng": 1.0, "radius_m": 50})

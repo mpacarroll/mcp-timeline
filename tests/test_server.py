@@ -58,7 +58,8 @@ class ServerToolTests(unittest.TestCase):
         names = asyncio.run(run())
         self.assertEqual(sorted(names),
                           ["activity_stats", "day_summary", "place_history",
-                           "visits_near"])
+                           "studio_day", "studio_propose", "studio_scope",
+                           "studio_trip", "visits_near"])
 
     def test_activity_stats_walking(self):
         result = self.call("activity_stats", {

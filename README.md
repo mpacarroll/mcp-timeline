@@ -152,6 +152,78 @@ The tunnel itself is separate. `cloudflared service install` already
 registers it as its own background service, so it survives reboots on its
 own.
 
+## History studio: trips, stories, redaction and consent
+
+The four tools above answer questions about your whole history. The
+studio is for the other direction: turning a stretch of days into a trip
+you edit, write up and share, while deciding exactly what leaves.
+
+```bash
+python3 tools/demo_studio.py demo.db          # synthetic Lisbon journey
+TIMELINE_DB=demo.db python3 studio_web.py     # http://127.0.0.1:8010
+```
+
+Point `TIMELINE_DB` at your own database instead to use it for real. In
+the browser studio you can:
+
+- **Capture a trip** from a date range. Visits, journeys and recorded
+  routes are copied in; days covered only by raw fixes (OwnTracks) are
+  reconstructed and labeled as such. Overnight flights and stays that
+  cross midnight show the next-day arrival.
+- **Edit** names, captions and notes, hide items, and write each day's
+  story over a plain auto-draft. Edits sit beside the captured snapshot;
+  your history is never rewritten.
+- **Inspect the source** of any item: what the source recorded, every
+  edit you made, whether the source row still exists, and which
+  redactions apply.
+- **Redact** a place, an area, one item or a whole day, as *mask* (a
+  neutral label, no name, coordinates or route) or *remove*. Routes into
+  a redacted stop are dropped, and the redacted names are replaced in
+  your own story text and captions too.
+- **Share selectively**: pick an audience view (times exact, part of day
+  or none; coordinates exact, neighborhood, city or none; routes,
+  captions, story, movement, provenance, which days) with a live preview
+  of exactly what leaves. Export JSON, GeoJSON, GPX, Markdown, HTML or
+  CSV, or create a revocable local share page.
+- **Delete** an item, a trip, or purge history for a date range from the
+  source tables, every trip, share page and place-name cache. Earlier
+  exports are marked stale; files the studio wrote can be removed, and
+  browser downloads are listed so you can delete them yourself.
+
+Every export, share page and agent read goes through one function
+(`studio_export.build_view`), and `tests/test_studio_export.py` renders
+every format under every view to prove redacted and deleted facts appear
+in none of them, as names or as coordinates. Redactions apply to your own
+exports too; there is no owner bypass.
+
+The same is available from the command line: `python3 studio.py --help`.
+
+### Giving an agent one trip, not your history
+
+Agents get nothing from the studio by default. In the **Agent access**
+tab, create a grant: one trip, one view, an expiry, read only or read
+plus suggest. The token is shown once and only its hash is stored. Then
+run the MCP server with only the studio tools:
+
+```bash
+claude mcp add trip -e TIMELINE_DB=/path/to/timeline.db \
+    -e TIMELINE_TOOLS=studio -e TIMELINE_GRANT=<token> -- \
+    /path/to/.venv/bin/python /path/to/server.py
+```
+
+| Tool | Does |
+|---|---|
+| `studio_scope` | What was shared, with which capabilities, until when. |
+| `studio_trip` | The trip through the grant's view and your redactions. |
+| `studio_day` | One shared day; other dates are refused. |
+| `studio_propose` | Suggest a caption or story text; nothing changes until you accept it. |
+
+The token lives in the server's environment, so the agent never sees or
+chooses it. Every call, allowed or refused, appears in the access log in
+the studio, and revoking a grant takes effect on the next call. With
+`TIMELINE_TOOLS=studio` the four whole-history tools are not registered
+at all. The default (`all`) keeps them, for your own trusted client.
+
 ## Tools
 
 | Tool | Answers |
